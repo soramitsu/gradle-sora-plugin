@@ -1,0 +1,154 @@
+plugins {
+    id 'groovy'
+    id 'maven'
+    id 'idea'
+//    id 'codenarc' // groovy static analyzer
+    id "com.gradle.plugin-publish" version "0.10.1"
+    id "java-gradle-plugin"
+}
+
+group 'jp.co.soramitsu'
+version '0'
+
+
+//codenarc {
+//    toolVersion = 0.21
+//}
+
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+gradlePlugin {
+    plugins {
+        soraPlugin {
+            id = 'soramitsu'
+            implementationClass = 'jp.co.soramitsu.devops.SoraPlugin'
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/soramitsu/gradle-sora-plugin'
+    vcsUrl = 'https://github.com/soramitsu/gradle-sora-plugin'
+    description = 'Greetings from here!'
+    tags = ['soramitsu', 'gradle']
+
+    plugins {
+        soraPlugin {
+            // id is captured from java-gradle-plugin configuration
+            displayName = 'Gradle Sora plugin'
+        }
+    }
+}
+
+//mavenCoordinates {
+//    groupId = "jp.co.soramitsu"
+//    artifactId = "sora-plugin"
+//    version = version
+//}
+
+final def spockVersion = '1.1-groovy-2.4'
+final def spockGenesisVersion = '0.6.0'
+final def lombokVersion = '1.18.4'
+final def cglibVersion = '3.2.10'
+final def bytebuddyVersion = '1.9.6'
+final def objgenesisVersion = '3.0.1'
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+    testImplementation gradleTestKit()
+
+//    // for mocking in groovy
+//    testCompile("net.bytebuddy:byte-buddy:${bytebuddyVersion}")
+//    testCompile("org.objenesis:objenesis:${objgenesisVersion}")
+//    testCompile("cglib:cglib-nodep:${cglibVersion}")
+
+//    compileOnly("org.projectlombok:lombok:${lombokVersion}")
+//    testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
+
+//    testCompile("com.nagternal:spock-genesis:${spockGenesisVersion}")
+
+    testImplementation('org.spockframework:spock-core:1.1-groovy-2.4') {
+        exclude module: 'groovy-all'
+    }
+}
+
+//// Write the plugin's classpath to a file to share with the tests
+//task createClasspathManifest {
+//    def outputDir = file("$buildDir/$name")
+//
+//    inputs.files sourceSets.main.runtimeClasspath
+//    outputs.dir outputDir
+//
+//    doLast {
+//        outputDir.mkdirs()
+//        file("$outputDir/plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join("\n")
+//    }
+//}
+//
+//// Add the classpath file to the test runtime classpath
+//dependencies {
+//    testRuntimeOnly files(createClasspathManifest)
+//}
+
+//
+//jar {
+//    manifest {
+//        attributes 'Implementation-Title': 'Sora Devops Helper plugin',
+//                'Implementation-Version': version,
+//                'Built-By': System.getProperty('user.name'),
+//                'Built-Date': new Date(),
+//                'Built-JDK': System.getProperty('java.version'),
+//                'Built-Gradle': gradle.gradleVersion
+//    }
+//}
+//
+//task groovydocJar(type: Jar, dependsOn: groovydoc) {
+//    classifier = 'javadoc'
+//    from groovydoc.destinationDir
+//}
+//
+//artifacts {
+//    archives groovydocJar
+//}
+//
+//tasks.withType(Test){
+//    testLogging {
+//        exceptionFormat "full"
+//    }
+//}
+//
+//modifyPom {
+//    project {
+//        name 'Gradle Devops Helper plugin'
+//        description 'Gradle plugin that provides tasks to unify tasks for gradle projects across Soramitsu projects.'
+//        url 'https://github.com/soramitsu/gradle-sora-plugin'
+//        inceptionYear '2019'
+//
+//        scm {
+//            url 'https://github.com/soramitsu/gradle-sora-plugin'
+//            connection 'scm:https://warchant@github.com/soramitsu/gradle-sora-plugin.git'
+//            developerConnection 'scm:git://github.com/soramitsu/gradle-sora-plugin.git'
+//        }
+//
+//        licenses {
+//            license {
+//                name 'The Apache Software License, Version 2.0'
+//                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//                distribution 'repo'
+//            }
+//        }
+//
+//        developers {
+//            developer {
+//                id 'warchant'
+//                name 'Bogdan Vaneev'
+//                email 'warchantua@gmail.com'
+//            }
+//        }
+//    }
+//}
