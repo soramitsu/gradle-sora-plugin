@@ -55,7 +55,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes 'Implementation-Title': 'Sora Devops Helper plugin',
+        attributes 'Implementation-Title': 'Gradle Sora plugin',
                 'Implementation-Version': version,
                 'Built-By': System.getProperty('user.name'),
                 'Built-Date': new Date(),

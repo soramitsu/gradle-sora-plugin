@@ -28,7 +28,11 @@ class SoraPlugin implements Plugin<Project> {
     static void checkRequirements(Project project) {
         project.afterEvaluate { Project p ->
             if (p.version != null && "unspecified" != p.version) {
-                throw new IllegalStateException("Please, remove line with 'version' from build.gradle: 'version = ${project.version}'")
+                throw new IllegalStateException(PrintUtils.format("Please, remove line with 'version' from build.gradle: 'version = ${project.version}'"))
+            }
+
+            if (p.group == null || p.group.toString().empty) {
+                throw new IllegalStateException(PrintUtils.format("Please, specify 'group'"))
             }
 
             setupGitVersionPlugin(project)
@@ -82,6 +86,10 @@ class SoraPlugin implements Plugin<Project> {
                 c.html.enabled = true
                 c.csv.enabled = false
             })
+            /// TODO: uncomment for multi-project builds
+//            project.subprojects.each {
+//                r.sourceSets(it.sourceSets.main)
+//            }
 
             r.executionData(project
                     .fileTree(project.rootDir.absolutePath)

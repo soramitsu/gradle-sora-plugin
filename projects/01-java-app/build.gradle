@@ -1,19 +1,19 @@
-plugins {
-    id 'soramitsu'
-    id 'application'
-}
-
-//apply plugin: 'soramitsu'
-//buildscript {
-//    repositories {
-//        mavenLocal()
-//        jcenter()
-//        gradlePluginPortal()
-//        dependencies { classpath 'jp.co.soramitsu:sora-plugin:+' }
-//    }
+//plugins {
+//    id 'soramitsu'
+//    id 'application'
 //}
-//apply plugin: 'java'
-//apply plugin: 'application'
+
+apply plugin: 'soramitsu'
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        gradlePluginPortal()
+        dependencies { classpath 'jp.co.soramitsu:sora-plugin:+' }
+    }
+}
+apply plugin: 'java'
+apply plugin: 'application'
 
 println("Hello from 01-java-app")
 
@@ -27,3 +27,4 @@ dependencies {
 
 // Define the main class for the application
 mainClassName = 'example.App'
+group = 'jp.co.soramitsu'

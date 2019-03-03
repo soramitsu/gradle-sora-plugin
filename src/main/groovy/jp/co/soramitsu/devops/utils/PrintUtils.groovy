@@ -7,6 +7,7 @@ class PrintUtils {
 
     static void printBanner(final Project project) {
         def v = project.versionDetails()
+
         println("""
 ###############################################
  \t\t SORAMITSU PLUGIN
@@ -24,5 +25,16 @@ class PrintUtils {
     IsDirty:          ${!v.isCleanTag}
 
         """)
+    }
+
+    static void print(String text) {
+        println(format(text))
+    }
+
+    static String format(String text) {
+        return """
+
+    ${text}
+        """
     }
 }
