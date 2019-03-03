@@ -6,7 +6,6 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Ignore
 import spock.lang.Specification
 
-@Ignore
 class JavaPluginTasksTest extends Specification {
 
     def "only correct tasks runned"() {

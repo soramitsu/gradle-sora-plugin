@@ -1,12 +1,12 @@
 package jp.co.soramitsu.devops.tasks
 
 import jp.co.soramitsu.devops.base.GradleProjectExecutor
+import org.gradle.testkit.runner.BuildResult
 import spock.lang.Specification
-
 
 class TasksTest extends Specification {
 
-    def "gradle tasks"() {
+    def "has required gradle tasks"() {
         given:
         def result
         def project = new GradleProjectExecutor(new File("./projects/${projectName}"))
@@ -16,9 +16,17 @@ class TasksTest extends Specification {
         println(result.output)
 
         then:
-        true
+        hasTask(result, 'build')
+        hasTask(result, 'test')
+        hasTask(result, 'check')
+        hasTask(result, 'jacocoTestReport')
+        hasTask(result, 'printVersion')
 
         where:
         projectName << ['01-java-app']
+    }
+
+    boolean hasTask(BuildResult result, String taskName){
+        return result.output.contains(taskName)
     }
 }

@@ -2,6 +2,7 @@ package jp.co.soramitsu.devops
 
 import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.palantir.gradle.gitversion.GitVersionPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPlugin
@@ -18,14 +19,25 @@ class SoraPlugin implements Plugin<Project> {
         setupJacocoPlugin(project)
         setupJavaPlugin(project)
         setupDockerPlugin(project)
+        setupGitVersionPlugin(project)
 
         SoramitsuConfig c = project.extensions.create("soramitsu", SoramitsuConfig)
+    }
+
+    static void setupGitVersionPlugin(Project project) {
+        project.pluginManager.apply(GitVersionPlugin.class)
+
+        // set project version based on git
+        project.version = project.gitVersion()
     }
 
     static void setupRepositories(Project project) {
         project.repositories.addAll([
                 project.repositories.maven {
                     url 'https://jitpack.io'
+                },
+                project.repositories.maven {
+                    url 'https://plugins.gradle.org/m2/'
                 },
                 project.repositories.jcenter(),
                 project.repositories.gradlePluginPortal(),
