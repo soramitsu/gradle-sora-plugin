@@ -1,6 +1,7 @@
 //buildscript { repositories { jcenter() } }
 plugins {
 //    id 'nebula.lint' version '9.3.2'
+    id "com.palantir.idea-test-fix" version "0.1.0"
     id 'groovy'
     id 'maven'
     id 'maven-publish'
