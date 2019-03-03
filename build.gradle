@@ -1,4 +1,3 @@
-//buildscript { repositories { jcenter() } }
 plugins {
 //    id 'nebula.lint' version '9.3.2'
     id "com.palantir.idea-test-fix" version "0.1.0"
@@ -10,6 +9,7 @@ plugins {
     id "java-gradle-plugin"
 }
 
+
 group 'jp.co.soramitsu'
 version '0'
 
@@ -18,39 +18,20 @@ repositories {
     jcenter()
 }
 
-gradlePlugin {
-    plugins {
-        soraPlugin {
-            id = 'soramitsu'
-            implementationClass = 'jp.co.soramitsu.devops.SoraPlugin'
-        }
-    }
-}
-
-pluginBundle {
-    website = 'https://github.com/soramitsu/gradle-sora-plugin'
-    vcsUrl = 'https://github.com/soramitsu/gradle-sora-plugin'
-    description = 'Gradle plugin that provides tasks to unify tasks for gradle projects across Soramitsu projects.'
-    tags = ['soramitsu', 'gradle']
-
-    plugins {
-        soraPlugin {
-            // id is captured from java-gradle-plugin configuration
-            displayName = 'Gradle Sora plugin'
-        }
-    }
-}
-
 //mavenCoordinates {
 //    groupId = "jp.co.soramitsu"
 //    artifactId = "sora-plugin"
 //    version = version
 //}
 
+
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
     testImplementation gradleTestKit()
+
+    implementation 'com.bmuschko:gradle-docker-plugin:4.5.0'
+
 
 //    // for mocking in groovy
 //    testCompile("net.bytebuddy:byte-buddy:${bytebuddyVersion}")
@@ -66,7 +47,6 @@ dependencies {
         exclude module: 'groovy-all'
     }
 }
-
 
 jar {
     manifest {
@@ -91,5 +71,28 @@ artifacts {
 tasks.withType(Test) {
     testLogging {
         exceptionFormat "full"
+    }
+}
+
+gradlePlugin {
+    plugins {
+        soraPlugin {
+            id = 'soramitsu'
+            implementationClass = 'jp.co.soramitsu.devops.SoraPlugin'
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/soramitsu/gradle-sora-plugin'
+    vcsUrl = 'https://github.com/soramitsu/gradle-sora-plugin'
+    description = 'Gradle plugin that provides tasks to unify tasks for gradle projects across Soramitsu projects.'
+    tags = ['soramitsu', 'gradle']
+
+    plugins {
+        soraPlugin {
+            // id is captured from java-gradle-plugin configuration
+            displayName = 'Gradle Sora plugin'
+        }
     }
 }

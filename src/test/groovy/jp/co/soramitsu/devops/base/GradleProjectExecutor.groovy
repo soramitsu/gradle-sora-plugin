@@ -1,4 +1,4 @@
-package jp.co.soramitsu.devops
+package jp.co.soramitsu.devops.base
 
 
 import org.gradle.testkit.runner.BuildResult
@@ -7,15 +7,15 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 
-class BaseProjectIntegrationTest {
+class GradleProjectExecutor {
 
-    Logger logger = LoggerFactory.getLogger(BaseProjectIntegrationTest.class)
+    Logger logger = LoggerFactory.getLogger(GradleProjectExecutor.class)
 
     private static final String defaultGradleVersion = '4.10'
 
     File projectDir
 
-    BaseProjectIntegrationTest(File dir) {
+    GradleProjectExecutor(File dir) {
         this.projectDir = dir
 
         if (projectDir == null) {

@@ -1,5 +1,7 @@
 package jp.co.soramitsu.devops
 
+import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPlugin
@@ -12,10 +14,28 @@ import org.gradle.testing.jacoco.tasks.JacocoReportsContainer
 class SoraPlugin implements Plugin<Project> {
 
     void apply(Project project) {
+        setupRepositories(project)
         setupJacocoPlugin(project)
         setupJavaPlugin(project)
+        setupDockerPlugin(project)
 
         SoramitsuConfig c = project.extensions.create("soramitsu", SoramitsuConfig)
+    }
+
+    static void setupRepositories(Project project) {
+        project.repositories.addAll([
+                project.repositories.maven {
+                    url 'https://jitpack.io'
+                },
+                project.repositories.jcenter(),
+                project.repositories.gradlePluginPortal(),
+                project.repositories.mavenCentral()
+        ])
+    }
+
+    static void setupDockerPlugin(Project project) {
+        project.pluginManager.apply(DockerRemoteApiPlugin.class)
+        project.tasks.create("docker1", DockerBuildImage)
     }
 
     static void setupJacocoPlugin(Project project) {
