@@ -3,6 +3,7 @@ package jp.co.soramitsu.devops
 import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.palantir.gradle.gitversion.GitVersionPlugin
+import jp.co.soramitsu.devops.utils.PrintUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPlugin
@@ -15,13 +16,23 @@ import org.gradle.testing.jacoco.tasks.JacocoReportsContainer
 class SoraPlugin implements Plugin<Project> {
 
     void apply(Project project) {
+        checkRequirements(project)
         setupRepositories(project)
         setupJacocoPlugin(project)
         setupJavaPlugin(project)
         setupDockerPlugin(project)
-        setupGitVersionPlugin(project)
 
         SoramitsuConfig c = project.extensions.create("soramitsu", SoramitsuConfig)
+    }
+
+    static void checkRequirements(Project project) {
+        project.afterEvaluate { Project p ->
+            if (p.version != null && "unspecified" != p.version) {
+                throw new IllegalStateException("Please, remove line with 'version' from build.gradle: 'version = ${project.version}'")
+            }
+
+            setupGitVersionPlugin(project)
+        }
     }
 
     static void setupGitVersionPlugin(Project project) {
@@ -29,6 +40,19 @@ class SoraPlugin implements Plugin<Project> {
 
         // set project version based on git
         project.version = project.gitVersion()
+
+        project.tasks.named("printVersion").configure {
+            group = "info"
+            description = "Print git version information"
+        }
+
+        project.tasks.register("osInfo") {
+            group = "info"
+            description = "Print OS and version information"
+            doLast {
+                PrintUtils.printBanner(project)
+            }
+        }
     }
 
     static void setupRepositories(Project project) {

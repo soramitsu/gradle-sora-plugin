@@ -1,4 +1,4 @@
-package jp.co.soramitsu.devops.base
+package jp.co.soramitsu.devops.utils
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner

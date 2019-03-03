@@ -1,6 +1,6 @@
 package jp.co.soramitsu.devops.tasks
 
-import jp.co.soramitsu.devops.base.GradleProjectExecutor
+import jp.co.soramitsu.devops.utils.GradleProjectExecutor
 import org.gradle.testkit.runner.BuildResult
 import spock.lang.Specification
 
@@ -21,6 +21,7 @@ class TasksTest extends Specification {
         hasTask(result, 'check')
         hasTask(result, 'jacocoTestReport')
         hasTask(result, 'printVersion')
+        hasTask(result, 'osInfo')
 
         where:
         projectName << ['01-java-app']

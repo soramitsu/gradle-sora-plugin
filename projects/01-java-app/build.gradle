@@ -1,21 +1,19 @@
-//apply plugin: 'soramitsu'
-//
-//buildscript{
-//    repositories {
-//        mavenLocal()
-//        jcenter()
-//        gradlePluginPortal()
-//        dependencies{ classpath 'jp.co.soramitsu:sora-plugin:0' }
-//    }
-//}
-//
-//apply plugin: 'java'
-//apply plugin: 'application'
-
 plugins {
     id 'soramitsu'
     id 'application'
 }
+
+//apply plugin: 'soramitsu'
+//buildscript {
+//    repositories {
+//        mavenLocal()
+//        jcenter()
+//        gradlePluginPortal()
+//        dependencies { classpath 'jp.co.soramitsu:sora-plugin:+' }
+//    }
+//}
+//apply plugin: 'java'
+//apply plugin: 'application'
 
 println("Hello from 01-java-app")
 

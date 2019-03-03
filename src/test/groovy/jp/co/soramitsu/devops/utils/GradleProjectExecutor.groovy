@@ -1,4 +1,4 @@
-package jp.co.soramitsu.devops.base
+package jp.co.soramitsu.devops.utils
 
 
 import org.gradle.testkit.runner.BuildResult
@@ -14,6 +14,8 @@ class GradleProjectExecutor {
     private static final String defaultGradleVersion = '4.10'
 
     File projectDir
+    File buildFile
+    File settingsFile
 
     GradleProjectExecutor(File dir) {
         this.projectDir = dir
@@ -29,6 +31,9 @@ class GradleProjectExecutor {
         if (!projectDir.isDirectory()) {
             throw new IllegalArgumentException("Project dir is not a directory: ${projectDir.canonicalPath}")
         }
+
+        settingsFile = new File(projectDir, 'settings.gradle')
+        buildFile = new File(projectDir, 'build.gradle')
     }
 
     BuildResult runTask(String taskName) {
