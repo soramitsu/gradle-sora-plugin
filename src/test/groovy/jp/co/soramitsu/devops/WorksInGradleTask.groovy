@@ -1,24 +1,10 @@
 package jp.co.soramitsu.devops
 
-import org.gradle.testkit.runner.GradleRunner
+
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
-import spock.lang.Specification
 import spock.lang.Unroll
 
-
-class WorksInGradleTask extends Specification {
-
-    @Rule
-    final TemporaryFolder testProjectDir = new TemporaryFolder()
-    File settingsFile
-    File buildFile
-
-    def setup() {
-        settingsFile = testProjectDir.newFile('settings.gradle')
-        buildFile = testProjectDir.newFile('build.gradle')
-    }
+class WorksInGradleTask extends BaseIntegrationTest {
 
     @Unroll
     def "ping task returns pong for gradle-#gradleVersion"() {
@@ -30,12 +16,7 @@ class WorksInGradleTask extends Specification {
         """
 
         when:
-        def result = GradleRunner.create()
-                .withGradleVersion(gradleVersion)
-                .withProjectDir(testProjectDir.root)
-                .withArguments('ping')
-                .withPluginClasspath()
-                .build()
+        def result = runTask("ping")
 
         then:
         result.output.contains('pong')

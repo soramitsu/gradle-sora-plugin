@@ -1,0 +1,23 @@
+apply plugin: 'soramitsu'
+
+buildscript{
+    repositories {
+        mavenLocal()
+        dependencies{ classpath 'jp.co.soramitsu:sora-plugin:0' }
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'idea'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+}
+
+// Define the main class for the application
+mainClassName = 'example.App'
