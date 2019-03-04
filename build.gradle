@@ -101,3 +101,5 @@ pluginBundle {
         }
     }
 }
+
+test.dependsOn(publishToMavenLocal)

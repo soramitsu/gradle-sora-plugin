@@ -1,26 +1,23 @@
 package jp.co.soramitsu.devops
 
-import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
-import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-import com.palantir.gradle.gitversion.GitVersionPlugin
+
+import jp.co.soramitsu.devops.coverage.CoveragePlugin
+import jp.co.soramitsu.devops.docker.DockerPlugin
+import jp.co.soramitsu.devops.misc.CustomJavaPlugin
+import jp.co.soramitsu.devops.misc.InfoPlugin
 import jp.co.soramitsu.devops.utils.PrintUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.tasks.testing.Test
-import org.gradle.api.tasks.testing.logging.TestLoggingContainer
-import org.gradle.testing.jacoco.plugins.JacocoPlugin
-import org.gradle.testing.jacoco.tasks.JacocoReport
-import org.gradle.testing.jacoco.tasks.JacocoReportsContainer
 
 class SoraPlugin implements Plugin<Project> {
 
     void apply(Project project) {
         checkRequirements(project)
         setupRepositories(project)
-        setupJacocoPlugin(project)
-        setupJavaPlugin(project)
-        setupDockerPlugin(project)
+
+        project.pluginManager.apply(CoveragePlugin.class)
+        project.pluginManager.apply(CustomJavaPlugin.class)
+        project.pluginManager.apply(DockerPlugin.class)
 
         SoramitsuConfig c = project.extensions.create("soramitsu", SoramitsuConfig)
     }
@@ -35,27 +32,7 @@ class SoraPlugin implements Plugin<Project> {
                 throw new IllegalStateException(PrintUtils.format("Please, specify 'group'"))
             }
 
-            setupGitVersionPlugin(project)
-        }
-    }
-
-    static void setupGitVersionPlugin(Project project) {
-        project.pluginManager.apply(GitVersionPlugin.class)
-
-        // set project version based on git
-        project.version = project.gitVersion()
-
-        project.tasks.named("printVersion").configure {
-            group = "info"
-            description = "Print git version information"
-        }
-
-        project.tasks.register("osInfo") {
-            group = "info"
-            description = "Print OS and version information"
-            doLast {
-                PrintUtils.printBanner(project)
-            }
+            project.pluginManager.apply(InfoPlugin.class)
         }
     }
 
@@ -71,53 +48,5 @@ class SoraPlugin implements Plugin<Project> {
                 project.repositories.gradlePluginPortal(),
                 project.repositories.mavenCentral()
         ])
-    }
-
-    static void setupDockerPlugin(Project project) {
-        project.pluginManager.apply(DockerRemoteApiPlugin.class)
-        project.tasks.create("docker1", DockerBuildImage)
-    }
-
-    static void setupJacocoPlugin(Project project) {
-        project.pluginManager.apply(JacocoPlugin.class)
-        project.tasks.withType(JacocoReport.class).configureEach({ JacocoReport r ->
-            r.reports({ JacocoReportsContainer c ->
-                c.xml.enabled = true
-                c.html.enabled = true
-                c.csv.enabled = false
-            })
-            /// TODO: uncomment for multi-project builds
-//            project.subprojects.each {
-//                r.sourceSets(it.sourceSets.main)
-//            }
-
-            r.executionData(project
-                    .fileTree(project.rootDir.absolutePath)
-                    .include("**/build/jacoco/*.exec"))
-
-            r.dependsOn(["build", "test"])
-        })
-    }
-
-    static void setupJavaPlugin(Project project) {
-        project.pluginManager.apply(JavaPlugin.class)
-        project.plugins.withType(JavaPlugin.class, { JavaPlugin p ->
-            project.tasks.named("build").configure { t ->
-                t.dependsOn.remove("check")
-                t.dependsOn.remove("test")
-            }
-
-            project.tasks.named("check").configure { t ->
-                t.dependsOn("build")
-            }
-
-            project.tasks.withType(Test.class).configureEach { t ->
-                t.testLogging({ TestLoggingContainer r ->
-                    r.exceptionFormat = "full"
-                })
-
-                t.dependsOn("build")
-            }
-        })
     }
 }

@@ -4,9 +4,11 @@ Min supported gradle 4.8
 
 ## Tasks
 
-| Task name        | Env/Prop | Example                 | Tasks executed                  | Description                                 |
-|------------------|----------|-------------------------|---------------------------------|---------------------------------------------|
-| build            | -        | gradle build            | compile + build                 | Builds, does NOT execute check or test.     |
-| check            | -        | gradle check            | build + check                   | Builds, then executes static code analyzers |
-| test             | -        | gradle test             | build + test                    | Builds, then executes all registered tests  |
-| jacocoTestReport | -        | gradle jacocoTestReport | build + test + jacocoTestReport | Builds, then collects code coverage.        |
+| Task name    | Env/Prop | Tasks executed          | Description                                             |
+|--------------|----------|-------------------------|---------------------------------------------------------|
+| build        | -        | compile + build         | Builds, does NOT execute check or test.                 |
+| check        | -        | build + test + check    | Builds, then executes static code analyzers             |
+| test         | -        | build + test            | Builds, then executes all registered tests              |
+| coverage     | -        | build + test + coverage | Builds, executes tests and then collects code coverage. |
+| osInfo       | -        | osInfo                  | Prints information about OS and project                 |
+| printVersion | -        | printVersion            | Prints project version based on git                     |

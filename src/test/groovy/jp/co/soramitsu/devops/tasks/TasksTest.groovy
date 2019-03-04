@@ -19,9 +19,12 @@ class TasksTest extends Specification {
         hasTask(result, 'build')
         hasTask(result, 'test')
         hasTask(result, 'check')
-        hasTask(result, 'jacocoTestReport')
+        hasTask(result, 'coverage')
         hasTask(result, 'printVersion')
         hasTask(result, 'osInfo')
+
+        !hasTask(result, 'jacocoTestReport')
+        !hasTask(result, 'jacocoTestCoverageVerification')
 
         where:
         projectName << ['01-java-app']
