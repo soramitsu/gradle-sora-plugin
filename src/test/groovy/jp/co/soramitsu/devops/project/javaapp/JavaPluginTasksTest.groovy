@@ -1,6 +1,7 @@
 package jp.co.soramitsu.devops.project.javaapp
 
 import jp.co.soramitsu.devops.utils.GradleProjectExecutor
+import jp.co.soramitsu.devops.utils.TestUtils
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import spock.lang.Specification
@@ -42,7 +43,7 @@ class JavaPluginTasksTest extends Specification {
         taskSucceeded(result, "test")
 
         where:
-        projectName << ['01-java-app']
+        projectName << TestUtils.projects
     }
 
     boolean taskSucceeded(BuildResult result, String task) {

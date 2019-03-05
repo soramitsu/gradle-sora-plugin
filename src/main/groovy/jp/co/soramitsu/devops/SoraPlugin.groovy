@@ -1,17 +1,22 @@
 package jp.co.soramitsu.devops
 
-
 import jp.co.soramitsu.devops.coverage.CoveragePlugin
 import jp.co.soramitsu.devops.docker.DockerPlugin
 import jp.co.soramitsu.devops.misc.CustomJavaPlugin
 import jp.co.soramitsu.devops.misc.InfoPlugin
-import jp.co.soramitsu.devops.utils.PrintUtils
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+import static jp.co.soramitsu.devops.utils.PrintUtils.format
+
 class SoraPlugin implements Plugin<Project> {
 
+    static final String SORAMITSU_EXTENSION_NAME = "soramitsu"
+
     void apply(Project project) {
+        project.extensions.create(SORAMITSU_EXTENSION_NAME, SoramitsuExtension)
+
         checkRequirements(project)
         setupRepositories(project)
 
@@ -19,17 +24,20 @@ class SoraPlugin implements Plugin<Project> {
         project.pluginManager.apply(CustomJavaPlugin.class)
         project.pluginManager.apply(DockerPlugin.class)
 
-        SoramitsuConfig c = project.extensions.create("soramitsu", SoramitsuConfig)
+    }
+
+    static void doForSpringApp(Project project, Action<? super Plugin> action) {
+        project.plugins.withId('org.springframework.boot', action)
     }
 
     static void checkRequirements(Project project) {
         project.afterEvaluate { Project p ->
-            if (p.version != null && "unspecified" != p.version) {
-                throw new IllegalStateException(PrintUtils.format("Please, remove line with 'version' from build.gradle: 'version = ${project.version}'"))
+            if (p.version != null && "unspecified" != p.version && !p.version.toString().empty) {
+                throw new IllegalStateException(format("Please, remove line with 'version' from build.gradle: 'version = ${project.version}'"))
             }
 
             if (p.group == null || p.group.toString().empty) {
-                throw new IllegalStateException(PrintUtils.format("Please, specify 'group'"))
+                throw new IllegalStateException(format("Please, specify 'group'"))
             }
 
             project.pluginManager.apply(InfoPlugin.class)
