@@ -52,6 +52,7 @@ Env vars ALWAYS overwrite any value from build.gradle.
 
 ## Features
 
+- [x] automatic versioning based on git ([read more](https://github.com/palantir/gradle-git-version/))
 - [x] build does not invoke tests
 - [ ] separate `check` task for static code analysis; formatting analysis
 - [x] `coverage` task, which invokes all tests and   
