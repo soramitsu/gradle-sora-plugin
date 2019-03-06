@@ -1,0 +1,38 @@
+//plugins {
+//    id 'soramitsu'
+//    id 'application'
+//}
+
+apply plugin: 'soramitsu'
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        gradlePluginPortal()
+        dependencies {
+            classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.21'
+            classpath 'jp.co.soramitsu:sora-plugin:+'
+        }
+    }
+}
+
+apply plugin: 'application'
+
+println("Hello from 03-kotlin-app")
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    // Use the Kotlin test library.
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+
+    // Use the Kotlin JUnit integration.
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
+}
+
+
+// Define the main class for the application
+mainClassName = 'example.App'
+group = 'jp.co.soramitsu'

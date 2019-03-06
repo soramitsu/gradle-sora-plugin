@@ -1,14 +1,17 @@
-package jp.co.soramitsu.devops.project.javaapp
+package jp.co.soramitsu.devops.project
 
 import jp.co.soramitsu.devops.utils.GradleProjectExecutor
 import jp.co.soramitsu.devops.utils.TestUtils
-import org.gradle.testkit.runner.BuildResult
-import org.gradle.testkit.runner.TaskOutcome
 import spock.lang.Specification
+import spock.lang.Unroll
+
+import static jp.co.soramitsu.devops.utils.TestUtils.taskNotRunned
+import static jp.co.soramitsu.devops.utils.TestUtils.taskSucceeded
 
 class JavaPluginTasksTest extends Specification {
 
-    def "only correct tasks runned"() {
+    @Unroll
+    def "[#projectName] only correct tasks runned"() {
         given: "a project"
         def result
         def project = new GradleProjectExecutor(new File("./projects/${projectName}"))
@@ -46,11 +49,4 @@ class JavaPluginTasksTest extends Specification {
         projectName << TestUtils.projects
     }
 
-    boolean taskSucceeded(BuildResult result, String task) {
-        return result.task(":${task}").outcome in [TaskOutcome.UP_TO_DATE, TaskOutcome.SUCCESS]
-    }
-
-    boolean taskNotRunned(BuildResult result, String task) {
-        return result.task(":${task}") == null
-    }
 }

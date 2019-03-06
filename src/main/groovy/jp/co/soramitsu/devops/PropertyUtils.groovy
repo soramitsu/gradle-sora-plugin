@@ -1,5 +1,6 @@
 package jp.co.soramitsu.devops
 
+import org.gradle.api.Action
 import org.gradle.api.Project
 
 class PropertyUtils {

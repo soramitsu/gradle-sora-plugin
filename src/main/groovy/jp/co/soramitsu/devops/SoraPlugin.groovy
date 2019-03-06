@@ -7,22 +7,30 @@ import jp.co.soramitsu.devops.misc.InfoPlugin
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.ApplicationPlugin
 
 import static jp.co.soramitsu.devops.utils.PrintUtils.format
 
 class SoraPlugin implements Plugin<Project> {
 
-    static final String SORAMITSU_EXTENSION_NAME = "soramitsu"
+    public static final String SORAMITSU_EXTENSION_NAME = "soramitsu"
 
     void apply(Project project) {
-        project.extensions.create(SORAMITSU_EXTENSION_NAME, SoramitsuExtension)
+        project.extensions.create(SORAMITSU_EXTENSION_NAME, SoramitsuExtension, project)
 
         checkRequirements(project)
         setupRepositories(project)
 
         project.pluginManager.apply(CoveragePlugin.class)
         project.pluginManager.apply(CustomJavaPlugin.class)
-        project.pluginManager.apply(DockerPlugin.class)
+
+        // if it is an application, then apply docker plugin
+        project.plugins.withType(ApplicationPlugin, { ApplicationPlugin p ->
+//            if (project.mainClassName == null || project.mainClassName?.toString()?.empty) {
+//                throw new IllegalStateException(format("Define mainClassName"))
+//            }
+            project.pluginManager.apply(DockerPlugin.class)
+        })
 
     }
 
@@ -40,7 +48,37 @@ class SoraPlugin implements Plugin<Project> {
                 throw new IllegalStateException(format("Please, specify 'group'"))
             }
 
-            project.pluginManager.apply(InfoPlugin.class)
+            abortIfHasUnwantedPlugins(project)
+
+            try {
+                // plugin may throw if it can not find .git directory
+                project.pluginManager.apply(InfoPlugin.class)
+            } catch (Exception e) {
+                println(format("Git plugin thrown exception. Auto versioning will not work. Details ${e.toString()}"))
+            }
+        }
+    }
+
+    static void abortIfHasUnwantedPlugins(Project project) {
+        def unwanted = []
+
+        [
+                'com.palantir.docker',
+                'com.liferay.app.docker',
+                'nebula.docker',
+                'org.xbib.gradle.plugin.docker',
+                'com.bmuschko.docker-java-application',
+                'com.bmuschko.docker-spring-boot-application',
+                'com.bmuschko.docker-remote-api',
+                'com.google.cloud.tools.jib'
+        ].each { id ->
+            if (project.plugins.hasPlugin(id)) {
+                unwanted << id
+            }
+        }
+
+        if (!unwanted.empty) {
+            throw new IllegalStateException(format("Please, remove the following plugins: ${unwanted}"))
         }
     }
 

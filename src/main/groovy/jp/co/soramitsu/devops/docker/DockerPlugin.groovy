@@ -1,14 +1,13 @@
 package jp.co.soramitsu.devops.docker
 
-
 import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
 import com.bmuschko.gradle.docker.tasks.DockerVersion
+import com.bmuschko.gradle.docker.tasks.RegistryCredentialsAware
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import jp.co.soramitsu.devops.SoraTask
 import jp.co.soramitsu.devops.SoramitsuExtension
-import jp.co.soramitsu.devops.utils.PrintUtils
 import org.eclipse.jgit.annotations.NonNull
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -16,27 +15,48 @@ import org.gradle.api.Task
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.Copy
 
+import java.util.stream.Collectors
+
+import static jp.co.soramitsu.devops.utils.PrintUtils.format
+
 class DockerPlugin implements Plugin<Project> {
 
     static final String DOCKER_TASK_GROUP = "docker"
 
     @Override
     void apply(Project project) {
-        project.pluginManager.apply(DockerRemoteApiPlugin.class)
+        SoramitsuExtension ext = project.extensions.getByType(SoramitsuExtension)
 
-        SoramitsuExtension soramitsuConfig = project.extensions.getByType(SoramitsuExtension)
+        def dockerConfig = configureExtension(project, "docker", DockerConfig, ext)
+        def registry = configureExtension(project, "registry", DockerRegistryConfig, dockerConfig)
 
         project.afterEvaluate { Project p ->
-            DockerConfig dockerConfig = configureExtension(project, "docker", DockerConfig, soramitsuConfig)
-            String registryUrl = dockerConfig.registryCredentials.url?.orNull
-            
+            project.pluginManager.apply(DockerRemoteApiPlugin.class)
+
+            def tag = getDefaultTag(project, registry)
+
             setupDockerVersionTask(p)
             setupDockerCleanTask(p)
             setupDockerfileCreateTask(p, dockerConfig.jar)
             setupDockerCopyJarTask(p, dockerConfig.jar)
-            setupDockerBuildTask(p, dockerConfig.tags)
-            setupDockerPushTask(p, registryUrl)
+            setupDockerBuildTask(p, tag)
+            setupDockerPushTask(p, registry, tag)
         }
+    }
+
+
+    static String getDefaultTag(Project project, DockerRegistryConfig registry) {
+        def parts = []
+        parts << registry?.url
+        parts << project.extensions.getByType(SoramitsuExtension)?.projectGroup
+        parts << project.name
+
+        parts = parts.stream()
+                .filter({ p -> p != null })
+                .collect(Collectors.toList())
+
+        return Sanitize.tag("${parts.join("/")}:${project.version}")
+
     }
 
     static <T, E> T configureExtension(Project project, String name, Class<T> type, E ext) {
@@ -50,21 +70,35 @@ class DockerPlugin implements Plugin<Project> {
         }
     }
 
-    static void setupDockerPushTask(Project project, String url) {
+    static void setupDockerPushTask(Project project, DockerRegistryConfig registry, String tag) {
+        if (registry == null || registry.url == null || registry.username == null || registry.password == null) {
+            println(format("Task ${SoraTask.dockerPush} is not available. Define docker registry."))
+            return
+        }
+
+        project.tasks.withType(RegistryCredentialsAware).configureEach { RegistryCredentialsAware t ->
+            t.registryCredentials.url.set registry.url
+            t.registryCredentials.username.set registry.username
+            t.registryCredentials.password.set registry.password
+            t.registryCredentials.email.set registry.email
+        }
+
         project.tasks.register(SoraTask.dockerPush, DockerPushImage).configure { DockerPushImage t ->
             t.group = DOCKER_TASK_GROUP
-            t.description = "Push docker image to ${url}"
+            t.description = "Push docker image to ${registry.url}"
 
             t.dependsOn([
                     SoraTask.dockerBuild,
             ])
+
+            t.imageName.set(tag)
         }
     }
 
-    static void setupDockerBuildTask(Project project, Iterable<String> tags) {
+    static void setupDockerBuildTask(Project project, String tag) {
         project.tasks.register(SoraTask.dockerBuild, DockerBuildImage).configure { DockerBuildImage t ->
             t.group = DOCKER_TASK_GROUP
-            t.description = "Build docker image with tags ${tags}"
+            t.description = "Build docker image with tag ${tag}"
 
             t.dependsOn([
                     SoraTask.dockerClean,
@@ -73,10 +107,12 @@ class DockerPlugin implements Plugin<Project> {
                     SoraTask.dockerfileCreate
             ])
 
-            t.tags.set(tags)
+            t.tags.set([tag])
+
+            t.inputDir.set getDockerContextDir(project)
 
             t.doLast {
-                println(PrintUtils.format("Built docker image with tags ${tags}"))
+                println(format("Built docker image with tags ${tag}"))
             }
         }
     }
@@ -87,6 +123,7 @@ class DockerPlugin implements Plugin<Project> {
             t.description = "Copy jar file to ${getDockerContextDir(project).path}"
             t.dependsOn(SoraTask.build)
 
+            println("JAR: ${jar.path}")
             t.from(jar)
             t.into(getDockerContextDir(project))
         }

@@ -2,6 +2,7 @@ package jp.co.soramitsu.devops.misc
 
 import com.palantir.gradle.gitversion.GitVersionPlugin
 import jp.co.soramitsu.devops.SoraTask
+import jp.co.soramitsu.devops.SoramitsuExtension
 import jp.co.soramitsu.devops.utils.PrintUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -30,5 +31,27 @@ class InfoPlugin implements Plugin<Project> {
                 PrintUtils.printBanner(project)
             }
         }
+
+        project.tasks.register(SoraTask.printConfig).configure { Task t ->
+            t.group = INFO_GROUP_NAME
+            t.description = "Print plugin configuration"
+
+            def ext = project.extensions.getByName("soramitsu")
+            t.doLast {
+                println("""
+    soramitsu                          = ${ext}
+    soramitsu.projectGroup             = ${ext?.projectGroup}
+    soramitsu.docker                   = ${ext?.docker}
+    soramitsu.docker.jar               = ${ext?.docker?.jar}
+    soramitsu.docker.tags              = ${ext?.docker?.tags}
+    soramitsu.docker.registry          = ${ext?.docker?.registry}
+    soramitsu.docker.registry.url      = ${ext?.docker?.registry?.url}
+    soramitsu.docker.registry.username = ${ext?.docker?.registry?.username}
+    soramitsu.docker.registry.password = ${ext?.docker?.registry?.password}
+    soramitsu.docker.registry.email    = ${ext?.docker?.registry?.email}
+""")
+            }
+        }
+
     }
 }

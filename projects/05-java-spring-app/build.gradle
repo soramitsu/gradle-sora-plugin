@@ -1,0 +1,32 @@
+apply plugin: 'soramitsu'
+buildscript {
+	repositories {
+		mavenLocal()
+		jcenter()
+		gradlePluginPortal()
+		dependencies {
+			classpath 'jp.co.soramitsu:sora-plugin:+'
+			classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.3.RELEASE")
+		}
+	}
+}
+
+apply plugin: 'application'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+
+println("Hello from 05-java-spring-app")
+
+
+group = 'jp.co.soramitsu'
+mainClassName = 'example.javaspringapp.Application'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

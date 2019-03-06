@@ -1,0 +1,26 @@
+apply plugin: 'soramitsu'
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        gradlePluginPortal()
+        dependencies {
+            classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.21'
+            classpath 'jp.co.soramitsu:sora-plugin:+'
+        }
+    }
+}
+
+// this project does not have 'application' plugin, so docker tasks are not available
+
+group = 'jp.co.soramitsu'
+
+println('Hello from 04-kotlin-lib')
+
+dependencies {
+    // Use the Kotlin test library.
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+
+    // Use the Kotlin JUnit integration.
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
+}

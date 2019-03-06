@@ -1,0 +1,19 @@
+apply plugin: 'soramitsu'
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        gradlePluginPortal()
+        dependencies { classpath 'jp.co.soramitsu:sora-plugin:+' }
+    }
+}
+
+// this project does not have 'application' plugin, so docker tasks are not available
+
+group = 'jp.co.soramitsu'
+
+println('Hello from 02-java-lib')
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+}
