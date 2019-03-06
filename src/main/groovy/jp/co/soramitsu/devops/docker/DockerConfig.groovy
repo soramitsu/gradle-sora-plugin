@@ -10,7 +10,7 @@ class DockerConfig {
 
     File jar
 
-    Iterable<String> tags
+    String tag
 
     DockerRegistryConfig registry
 

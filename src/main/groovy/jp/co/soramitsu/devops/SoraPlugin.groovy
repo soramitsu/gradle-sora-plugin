@@ -26,9 +26,6 @@ class SoraPlugin implements Plugin<Project> {
 
         // if it is an application, then apply docker plugin
         project.plugins.withType(ApplicationPlugin, { ApplicationPlugin p ->
-//            if (project.mainClassName == null || project.mainClassName?.toString()?.empty) {
-//                throw new IllegalStateException(format("Define mainClassName"))
-//            }
             project.pluginManager.apply(DockerPlugin.class)
         })
 

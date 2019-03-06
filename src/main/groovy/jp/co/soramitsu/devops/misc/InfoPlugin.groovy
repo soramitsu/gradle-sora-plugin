@@ -43,7 +43,7 @@ class InfoPlugin implements Plugin<Project> {
     soramitsu.projectGroup             = ${ext?.projectGroup}
     soramitsu.docker                   = ${ext?.docker}
     soramitsu.docker.jar               = ${ext?.docker?.jar}
-    soramitsu.docker.tags              = ${ext?.docker?.tags}
+    soramitsu.docker.tag               = ${ext?.docker?.tag}
     soramitsu.docker.registry          = ${ext?.docker?.registry}
     soramitsu.docker.registry.url      = ${ext?.docker?.registry?.url}
     soramitsu.docker.registry.username = ${ext?.docker?.registry?.username}
