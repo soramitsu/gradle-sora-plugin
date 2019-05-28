@@ -36,7 +36,7 @@ class InfoPlugin implements Plugin<Project> {
             t.group = INFO_GROUP_NAME
             t.description = "Print plugin configuration"
 
-            def ext = project.extensions.getByName("soramitsu")
+            def ext = project.extensions.getByType(SoramitsuExtension)
             t.doLast {
                 println("""
     soramitsu                          = ${ext}
