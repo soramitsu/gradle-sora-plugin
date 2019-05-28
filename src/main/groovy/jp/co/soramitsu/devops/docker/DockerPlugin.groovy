@@ -25,16 +25,14 @@ class DockerPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        SoramitsuExtension ext = project.extensions.getByType(SoramitsuExtension)
-
-        def dockerConfig = configureExtension(project, "docker", DockerConfig, ext)
-        def registry = configureExtension(project, "registry", DockerRegistryConfig, dockerConfig)
 
         project.afterEvaluate { Project p ->
             project.pluginManager.apply(DockerRemoteApiPlugin.class)
 
+            SoramitsuExtension ext = project.extensions.getByType(SoramitsuExtension)
+            def dockerConfig = ext.docker
+            def registry = dockerConfig.registry
             def tag = getDefaultTag(project, registry)
-
             setupDockerVersionTask(p)
             setupDockerCleanTask(p)
             setupDockerfileCreateTask(p, dockerConfig.jar)
@@ -59,10 +57,6 @@ class DockerPlugin implements Plugin<Project> {
 
     }
 
-    static <T, E> T configureExtension(Project project, String name, Class<T> type, E ext) {
-        return ((ExtensionAware) ext).extensions.create(name, type, project)
-    }
-
     static void setupDockerVersionTask(Project project) {
         project.tasks.register(SoraTask.dockerVersion, DockerVersion).configure { DockerVersion t ->
             t.group = DOCKER_TASK_GROUP
@@ -71,8 +65,18 @@ class DockerPlugin implements Plugin<Project> {
     }
 
     static void setupDockerPushTask(Project project, DockerRegistryConfig registry, String tag) {
-        if (registry == null || registry.url == null || registry.username == null || registry.password == null) {
-            println(format("Task ${SoraTask.dockerPush} is not available. Define docker registry."))
+        def errorMessageHeader = "Task ${SoraTask.dockerPush} is not available."
+        if (registry == null) {
+            println(format("$errorMessageHeader Define docker registry."))
+            return
+        } else if (registry.url == null) {
+            println(format("$errorMessageHeader Define docker registry 'url' param."))
+            return
+        } else if (registry.username == null) {
+            println(format("$errorMessageHeader Define docker registry 'username' param."))
+            return
+        } else if (registry.password == null) {
+            println(format("$errorMessageHeader Define docker registry 'password' param."))
             return
         }
 
