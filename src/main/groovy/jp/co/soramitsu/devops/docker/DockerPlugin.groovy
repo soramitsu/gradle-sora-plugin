@@ -31,8 +31,14 @@ class DockerPlugin implements Plugin<Project> {
 
             def jar = dockerConfig.jar
             if (jar == null) {
-                println(format("soramitsu.docker.jar is null, no docker tasks available"))
-                return
+                if (project.hasProperty("jar")) {
+                    jar = project?.jar?.archiveFile?.get()?.asFile
+                }
+
+                if (jar == null) {
+                    println(format("soramitsu.docker.jar is null, no docker tasks available"))
+                    return
+                }
             }
 
             project.pluginManager.apply(DockerRemoteApiPlugin.class)
