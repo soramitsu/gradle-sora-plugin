@@ -1,7 +1,9 @@
 package jp.co.soramitsu.devops
 
 import jp.co.soramitsu.devops.coverage.CoveragePlugin
+import jp.co.soramitsu.devops.docker.DockerConfig
 import jp.co.soramitsu.devops.docker.DockerPlugin
+import jp.co.soramitsu.devops.docker.DockerRegistryConfig
 import jp.co.soramitsu.devops.misc.CustomJavaPlugin
 import jp.co.soramitsu.devops.misc.InfoPlugin
 import org.gradle.api.Action
@@ -13,10 +15,8 @@ import static jp.co.soramitsu.devops.utils.PrintUtils.format
 
 class SoraPlugin implements Plugin<Project> {
 
-    public static final String SORAMITSU_EXTENSION_NAME = "soramitsu"
-
     void apply(Project project) {
-        project.extensions.create(SORAMITSU_EXTENSION_NAME, SoramitsuExtension, project)
+        def ext = project.extensions.create("soramitsu", SoramitsuExtension, project)
 
         checkRequirements(project)
         setupRepositories(project)

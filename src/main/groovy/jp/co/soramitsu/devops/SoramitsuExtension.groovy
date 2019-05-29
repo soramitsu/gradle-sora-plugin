@@ -1,8 +1,10 @@
 package jp.co.soramitsu.devops
 
+import groovy.transform.ToString
 import jp.co.soramitsu.devops.docker.DockerConfig
 import org.gradle.api.Project
 
+@ToString
 class SoramitsuExtension {
 
     String projectGroup

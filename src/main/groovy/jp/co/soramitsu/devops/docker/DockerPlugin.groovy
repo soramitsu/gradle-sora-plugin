@@ -26,10 +26,8 @@ class DockerPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
 
-        SoramitsuExtension ext = project.extensions.getByType(SoramitsuExtension)
-
-        def dockerConfig = configureExtension(project, "docker", DockerConfig, ext)
-        def registry = configureExtension(project, "registry", DockerRegistryConfig, dockerConfig)
+        def dockerConfig = project.soramitsu.extensions.create("docker", DockerConfig, project)
+        def registry = dockerConfig.extensions.create("registry", DockerRegistryConfig, project)
 
         project.afterEvaluate { Project p ->
             project.pluginManager.apply(DockerRemoteApiPlugin.class)
@@ -43,11 +41,6 @@ class DockerPlugin implements Plugin<Project> {
             setupDockerPushTask(p, registry, tag)
         }
     }
-
-    static <T, E> T configureExtension(Project project, String name, Class<T> type, E ext) {
-        return ((ExtensionAware) ext).extensions.create(name, type, project)
-    }
-
 
     static String getDefaultTag(Project project, DockerRegistryConfig registry) {
         def parts = []

@@ -1,6 +1,6 @@
 package jp.co.soramitsu.devops.utils
 
-
+import org.gradle.internal.impldep.org.apache.commons.lang.RandomStringUtils
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.slf4j.Logger
@@ -36,8 +36,30 @@ class GradleProjectExecutor {
         buildFile = new File(projectDir, 'build.gradle')
     }
 
+    void clearProject() {
+        settingsFile.delete()
+        settingsFile.createNewFile()
+        buildFile.delete()
+        buildFile.createNewFile()
+
+        settingsFile << "rootProject.name = 'sora-test-${RandomStringUtils.randomAlphabetic(5)}'"
+    }
+
     BuildResult runTask(String taskName) {
         return runTask(taskName, defaultGradleVersion)
+    }
+
+    BuildResult runTask(String taskName, Map<String, String> env) {
+        def gradleVersion = defaultGradleVersion
+        logger.warn("running task :${taskName} with gradle-${gradleVersion} in ${projectDir.path}")
+        return GradleRunner.create()
+                .withGradleVersion(gradleVersion)
+                .withEnvironment(env)
+                .withProjectDir(projectDir)
+                .withArguments(taskName)
+                .withPluginClasspath()
+                .forwardOutput()
+                .build()
     }
 
     BuildResult runTask(String taskName, String gradleVersion) {
@@ -47,6 +69,7 @@ class GradleProjectExecutor {
                 .withProjectDir(projectDir)
                 .withArguments(taskName)
                 .withPluginClasspath()
+                .forwardOutput()
                 .build()
     }
 
