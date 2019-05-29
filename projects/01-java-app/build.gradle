@@ -34,3 +34,14 @@ soramitsu {
         jar = new File("build/libs/${project.name}-${project.version}.jar")
     }
 }
+
+jar {
+    manifest {
+        attributes 'Implementation-Version': version,
+                'Main-Class': 'example.App'
+    }
+}
+
+application {
+    mainClassName = 'example.App'
+}

@@ -32,9 +32,6 @@ class PrintUtils {
     }
 
     static String format(String text) {
-        return """
-
-    ${text}
-        """
+        return "[soramitsu]: ${text}"
     }
 }

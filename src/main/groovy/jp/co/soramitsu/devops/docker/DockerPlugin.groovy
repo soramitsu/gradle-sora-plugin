@@ -13,7 +13,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
-import org.gradle.jvm.tasks.Jar
 
 import java.util.stream.Collectors
 
@@ -132,7 +131,7 @@ class DockerPlugin implements Plugin<Project> {
             t.description = "Copy jar file to ${getDockerContextDir(project).path}"
             t.dependsOn(SoraTask.build)
 
-            println("JAR: ${jar.path}")
+            println(format("JAR: ${jar.path}"))
             t.from(jar)
             t.into(getDockerContextDir(project))
         }

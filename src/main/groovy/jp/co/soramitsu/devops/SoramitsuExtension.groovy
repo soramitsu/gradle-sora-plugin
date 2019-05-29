@@ -15,5 +15,4 @@ class SoramitsuExtension {
     SoramitsuExtension(Project project) {
         this.project = project
     }
-
 }

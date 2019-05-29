@@ -35,11 +35,6 @@ class CoveragePlugin implements Plugin<Project> {
                 c.csv.enabled = false
             })
 
-            /// TODO: try uncomment for multi-project builds
-//            project.subprojects.each {
-//                r.sourceSets(it.sourceSets.main)
-//            }
-
             r.executionData(project
                     .fileTree(project.rootDir.absolutePath)
                     .include("**/build/jacoco/*.exec"))

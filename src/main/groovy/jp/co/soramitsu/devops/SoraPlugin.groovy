@@ -1,16 +1,20 @@
 package jp.co.soramitsu.devops
 
-
 import jp.co.soramitsu.devops.coverage.CoveragePlugin
 import jp.co.soramitsu.devops.docker.DockerConfig
 import jp.co.soramitsu.devops.docker.DockerPlugin
 import jp.co.soramitsu.devops.docker.DockerRegistryConfig
-import jp.co.soramitsu.devops.misc.CustomJavaPlugin
 import jp.co.soramitsu.devops.misc.InfoPlugin
+import org.apache.tools.ant.taskdefs.Java
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.ApplicationPlugin
+import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.tasks.testing.Test
+import org.gradle.api.tasks.testing.logging.TestLoggingContainer
+
+import java.util.stream.Collectors
 
 import static jp.co.soramitsu.devops.utils.PrintUtils.format
 
@@ -24,19 +28,38 @@ class SoraPlugin implements Plugin<Project> {
         checkRequirements(project)
         setupRepositories(project)
 
-        applyInfoPlugin(project)
+        tryApplyInfoPlugin(project)
         project.pluginManager.apply(CoveragePlugin.class)
-//        project.pluginManager.apply(CustomJavaPlugin.class)
 
-        // if it is an application, then apply docker plugin
+        // if application plugin is installed, then apply docker plugin
         project.plugins.withType(ApplicationPlugin, { ApplicationPlugin p ->
             project.pluginManager.apply(DockerPlugin.class)
         })
 
+        // if java plugin is installed, then setup proper build tasks
+        project.plugins.withType(JavaPlugin, { JavaPlugin p ->
+            setupForJavaPlugin(project)
+        })
     }
 
     static void doForSpringApp(Project project, Action<? super Plugin> action) {
         project.plugins.withId('org.springframework.boot', action)
+    }
+
+    static void setupForJavaPlugin(Project project) {
+        project.tasks.named(SoraTask.build).configure { t ->
+            // build should not depend on check/test
+            t.dependsOn.remove(SoraTask.check)
+            t.dependsOn.remove(SoraTask.test)
+        }
+
+        project.tasks.withType(Test.class).configureEach { t ->
+            t.testLogging({ TestLoggingContainer r ->
+                r.exceptionFormat = "full"
+            })
+
+            t.dependsOn(SoraTask.build)
+        }
     }
 
     static void checkRequirements(Project project) {
@@ -49,7 +72,7 @@ class SoraPlugin implements Plugin<Project> {
         }
     }
 
-    static void applyInfoPlugin(Project project){
+    static void tryApplyInfoPlugin(Project project) {
         try {
             // plugin may throw if it can not find .git directory
             project.pluginManager.apply(InfoPlugin.class)
@@ -59,9 +82,7 @@ class SoraPlugin implements Plugin<Project> {
     }
 
     static void abortIfHasUnwantedPlugins(Project project) {
-        def unwanted = []
-
-        [
+        def unwanted = [
                 'com.palantir.docker',
                 'com.liferay.app.docker',
                 'nebula.docker',
@@ -70,11 +91,11 @@ class SoraPlugin implements Plugin<Project> {
                 'com.bmuschko.docker-spring-boot-application',
                 'com.bmuschko.docker-remote-api',
                 'com.google.cloud.tools.jib'
-        ].each { id ->
-            if (project.plugins.hasPlugin(id)) {
-                unwanted << id
-            }
-        }
+        ]
+                .stream()
+                .filter({ id ->
+                    return project.plugins.hasPlugin(id)
+                }).collect(Collectors.toList())
 
         if (!unwanted.empty) {
             throw new IllegalStateException(format("Please, remove the following plugins: ${unwanted}"))
