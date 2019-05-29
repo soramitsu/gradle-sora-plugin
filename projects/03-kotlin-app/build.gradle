@@ -1,8 +1,10 @@
+// this is how we should apply released plugin
 //plugins {
 //    id 'soramitsu'
 //    id 'application'
 //}
 
+// this is how we apply plugin for local dev
 apply plugin: 'soramitsu'
 buildscript {
     repositories {
@@ -47,8 +49,18 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
+// since we applied 'appliction', then we expect to have docker tasks enabled
+// define path to packaged jar:
 soramitsu {
     docker {
         jar = new File("build/libs/${project.name}-${project.version}.jar")
+    }
+}
+
+// define main class in the manifest
+jar {
+    manifest {
+        attributes 'Implementation-Version': version,
+                'Main-Class': 'example.App'
     }
 }

@@ -38,15 +38,10 @@ soramitsu {
 	}
 }
 
-mainClassName = 'example.javaspringapp.Application'
-
+// define main class in the manifest
 jar {
 	manifest {
 		attributes 'Implementation-Version': version,
 				'Main-Class': 'example.javaspringapp.Application'
 	}
-}
-
-application {
-	mainClassName = 'example.javaspringapp.Application'
 }

@@ -12,9 +12,9 @@ plugins {
     id 'com.adarshr.test-logger' version '1.6.0'
 }
 
-
 group 'jp.co.soramitsu'
-version '0'
+def pluginId = "${group}.sora-plugin"
+version '0.1'
 
 repositories {
     mavenCentral()
@@ -24,13 +24,6 @@ repositories {
     }
 }
 
-//mavenCoordinates {
-//    groupId = "jp.co.soramitsu"
-//    artifactId = "sora-plugin"
-//    version = version
-//}
-
-
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
@@ -39,16 +32,6 @@ dependencies {
     implementation 'com.bmuschko:gradle-docker-plugin:4.6.0'
     implementation 'gradle.plugin.com.palantir.gradle.gitversion:gradle-git-version:0.12.0-rc2'
 
-
-//    // for mocking in groovy
-//    testCompile("net.bytebuddy:byte-buddy:${bytebuddyVersion}")
-//    testCompile("org.objenesis:objenesis:${objgenesisVersion}")
-//    testCompile("cglib:cglib-nodep:${cglibVersion}")
-
-//    compileOnly("org.projectlombok:lombok:${lombokVersion}")
-//    testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
-
-//    testCompile("com.nagternal:spock-genesis:${spockGenesisVersion}")
 
     testImplementation('org.spockframework:spock-core:1.1-groovy-2.4') {
         exclude module: 'groovy-all'
@@ -75,16 +58,10 @@ artifacts {
     archives groovydocJar
 }
 
-tasks.withType(Test) {
-    testLogging {
-        exceptionFormat "full"
-    }
-}
-
 gradlePlugin {
     plugins {
         soraPlugin {
-            id = 'soramitsu'
+            id = pluginId
             implementationClass = 'jp.co.soramitsu.devops.SoraPlugin'
         }
     }
