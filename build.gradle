@@ -62,6 +62,7 @@ gradlePlugin {
     plugins {
         soraPlugin {
             id = pluginId
+            displayName = "Gradle Sora plugin"
             implementationClass = 'jp.co.soramitsu.devops.SoraPlugin'
         }
     }
@@ -72,13 +73,6 @@ pluginBundle {
     vcsUrl = 'https://github.com/soramitsu/gradle-sora-plugin'
     description = 'Gradle plugin that provides tasks to unify tasks for gradle projects across Soramitsu projects.'
     tags = ['soramitsu', 'gradle']
-
-    plugins {
-        soraPlugin {
-            // id is captured from java-gradle-plugin configuration
-            displayName = 'Gradle Sora plugin'
-        }
-    }
 }
 
 test.dependsOn(publishToMavenLocal)

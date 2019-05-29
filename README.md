@@ -4,11 +4,7 @@ Min supported gradle 4.8
 
 ## Usage
 
-```
-plugins {
-  id 'soramitsu'
-}
-```
+https://plugins.gradle.org/plugin/jp.co.soramitsu.sora-plugin
 
 ## Tasks
 
