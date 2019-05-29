@@ -35,6 +35,8 @@ soramitsu {
     }
 }
 
+mainClassName = 'example.App'
+
 jar {
     manifest {
         attributes 'Implementation-Version': version,

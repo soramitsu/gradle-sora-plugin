@@ -152,13 +152,13 @@ class DockerPlugin implements Plugin<Project> {
                     "built-gradle": "${project.gradle.gradleVersion}"
             ])
             t.instruction "MAINTAINER Bogdan Vaneev <bogdan@soramitsu.co.jp>"
-            t.instruction "ARG MAX_RAM_FRACTION=4"
-            t.instruction """ARG JAVA_OPTIONS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap \\
+            t.instruction "ENV MAX_RAM_FRACTION=4"
+            t.instruction """ENV JAVA_OPTIONS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap \\
             -XX:MaxRAMFraction=\${MAX_RAM_FRACTION} -XX:+UseContainerSupport \\
-            -XX:+PrintFlagsFinal -XshowSettings:vm -version \${JAVA_OPTIONS}"
+            -XX:+PrintFlagsFinal -XshowSettings:vm \${JAVA_OPTIONS}"
             """
             t.copyFile jar.name, "/${jar.name}"
-            t.defaultCommand 'java', '${JAVA_OPTIONS}', '-Djava.security.egd=file:/dev/./urandom', '-jar', "/${jar.name}"
+            t.defaultCommand  "sh", "-c", "java \${JAVA_OPTIONS} -Djava.security.egd=file:/dev/./urandom -jar /${jar.name}"
         }
     }
 

@@ -111,7 +111,6 @@ testlogger {
     showExceptions true
     slowThreshold 2000
     showSummary true
-    showSimpleNames false
     showPassed true
     showSkipped true
     showFailed true
