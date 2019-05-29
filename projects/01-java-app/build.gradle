@@ -30,8 +30,6 @@ mainClassName = 'example.App'
 
 soramitsu {
     docker {
-        registry {
-            url = "url"
-        }
+        jar = project.jar.archiveFile.get().asFile
     }
 }

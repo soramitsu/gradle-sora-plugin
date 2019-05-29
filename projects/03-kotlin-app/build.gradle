@@ -46,3 +46,9 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
+
+soramitsu {
+    docker {
+        jar = project.jar.archiveFile.get().asFile
+    }
+}

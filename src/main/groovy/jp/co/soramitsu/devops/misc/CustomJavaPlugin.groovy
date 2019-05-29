@@ -1,5 +1,6 @@
 package jp.co.soramitsu.devops.misc
 
+import groovy.transform.CompileStatic
 import jp.co.soramitsu.devops.SoraTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -7,6 +8,7 @@ import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestLoggingContainer
 
+@CompileStatic
 class CustomJavaPlugin implements Plugin<Project> {
 
     @Override

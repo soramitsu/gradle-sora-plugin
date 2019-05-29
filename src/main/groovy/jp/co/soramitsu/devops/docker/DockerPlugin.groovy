@@ -12,7 +12,6 @@ import org.eclipse.jgit.annotations.NonNull
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.Copy
 
 import java.util.stream.Collectors
@@ -25,18 +24,24 @@ class DockerPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-
-        def dockerConfig = project.soramitsu.extensions.create("docker", DockerConfig, project)
-        def registry = dockerConfig.extensions.create("registry", DockerRegistryConfig, project)
-
         project.afterEvaluate { Project p ->
             project.pluginManager.apply(DockerRemoteApiPlugin.class)
+
+            def ext = project.extensions.getByType(SoramitsuExtension)
+            def dockerConfig = ext.extensions.getByType(DockerConfig)
+            def registry = dockerConfig.extensions.getByType(DockerRegistryConfig)
+
+            def jar = dockerConfig.jar
+            if (jar == null) {
+                println(format("soramitsu.docker.jar is null, no docker tasks available"))
+                return
+            }
 
             def tag = getDefaultTag(project, registry)
             setupDockerVersionTask(p)
             setupDockerCleanTask(p)
-            setupDockerfileCreateTask(p, dockerConfig.jar)
-            setupDockerCopyJarTask(p, dockerConfig.jar)
+            setupDockerfileCreateTask(p, jar)
+            setupDockerCopyJarTask(p, jar)
             setupDockerBuildTask(p, tag)
             setupDockerPushTask(p, registry, tag)
         }
@@ -50,9 +55,9 @@ class DockerPlugin implements Plugin<Project> {
 
         parts = parts.stream()
                 .filter({ p -> p != null })
-                .collect(Collectors.toList())
+                .collect(Collectors.joining("/"))
 
-        return Sanitize.tag("${parts.join("/")}:${project.version}")
+        return Sanitize.tag("${parts}:${project.version}")
 
     }
 

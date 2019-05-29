@@ -30,3 +30,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
+
+soramitsu {
+	docker {
+		jar = project.jar.archiveFile.get().asFile
+	}
+}

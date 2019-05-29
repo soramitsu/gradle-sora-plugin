@@ -30,7 +30,6 @@ class ExtensionTest extends Specification {
             }
             group = 'group'
             
-            
             soramitsu {
               projectGroup = '${projectGroup}'
               docker {
@@ -121,13 +120,6 @@ class ExtensionTest extends Specification {
 
         def project = new GradleProjectExecutor(td)
         project.clearProject()
-
-        def projectGroup = "ext-projectGroup"
-        def tag = "ext-tag"
-        def jar = "ext-jar"
-        def regUrl = "ext-reg-url"
-        def regUsername = "ext-reg-username"
-        def regPassword = "ext-reg-password"
 
         when: "build file has no version specified"
         project.buildFile << """

@@ -1,11 +1,13 @@
 package jp.co.soramitsu.devops.docker
 
+import groovy.transform.CompileStatic
 import groovy.transform.ToString
 import org.gradle.api.Project
 
 import static jp.co.soramitsu.devops.PropertyUtils.getEnv
 
 @ToString
+@CompileStatic
 class DockerRegistryConfig {
     String url
     String username

@@ -1,5 +1,6 @@
 package jp.co.soramitsu.devops
 
+
 import jp.co.soramitsu.devops.coverage.CoveragePlugin
 import jp.co.soramitsu.devops.docker.DockerConfig
 import jp.co.soramitsu.devops.docker.DockerPlugin
@@ -16,7 +17,9 @@ import static jp.co.soramitsu.devops.utils.PrintUtils.format
 class SoraPlugin implements Plugin<Project> {
 
     void apply(Project project) {
-        def ext = project.extensions.create("soramitsu", SoramitsuExtension, project)
+        def soramitsu = project.extensions.create("soramitsu", SoramitsuExtension, project)
+        def dockerConfig = soramitsu.extensions.create("docker", DockerConfig, project)
+        def registry = dockerConfig.extensions.create("registry", DockerRegistryConfig, project)
 
         checkRequirements(project)
         setupRepositories(project)
