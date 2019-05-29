@@ -26,7 +26,7 @@ class SoraPlugin implements Plugin<Project> {
 
         applyInfoPlugin(project)
         project.pluginManager.apply(CoveragePlugin.class)
-        project.pluginManager.apply(CustomJavaPlugin.class)
+//        project.pluginManager.apply(CustomJavaPlugin.class)
 
         // if it is an application, then apply docker plugin
         project.plugins.withType(ApplicationPlugin, { ApplicationPlugin p ->

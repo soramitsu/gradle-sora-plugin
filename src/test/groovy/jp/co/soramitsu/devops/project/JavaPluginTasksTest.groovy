@@ -23,27 +23,8 @@ class JavaPluginTasksTest extends Specification {
         then: "no test/check is executed"
         result.output.contains(projectName)
         taskSucceeded(result, "build")
-        taskNotRunned(result, "test")
-        taskNotRunned(result, "check")
-
-        when: "execute test task"
-        result = project.runTask("test")
-        println(result.output)
-
-        then: "no check is executed"
-        result.output.contains(projectName)
-        taskSucceeded(result, "build")
         taskSucceeded(result, "test")
-        taskNotRunned(result, "check")
-
-        when: "execute check task"
-        result = project.runTask("check")
-        println(result.output)
-
-        then:
-        taskSucceeded(result, "build")
         taskSucceeded(result, "check")
-        taskSucceeded(result, "test")
 
         where:
         projectName << TestUtils.projects

@@ -46,3 +46,9 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
+
+soramitsu {
+    docker {
+        jar = new File("build/libs/${project.name}-${project.version}.jar")
+    }
+}

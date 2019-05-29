@@ -13,6 +13,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
+import org.gradle.jvm.tasks.Jar
 
 import java.util.stream.Collectors
 
@@ -31,14 +32,8 @@ class DockerPlugin implements Plugin<Project> {
 
             def jar = dockerConfig.jar
             if (jar == null) {
-                if (project.hasProperty("jar")) {
-                    jar = project?.jar?.archiveFile?.get()?.asFile
-                }
-
-                if (jar == null) {
-                    println(format("soramitsu.docker.jar is null, no docker tasks available"))
-                    return
-                }
+                println(format("soramitsu.docker.jar is null, no docker tasks available"))
+                return
             }
 
             project.pluginManager.apply(DockerRemoteApiPlugin.class)

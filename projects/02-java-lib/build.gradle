@@ -8,6 +8,8 @@ buildscript {
     }
 }
 
+apply plugin: 'java'
+
 // this project does not have 'application' plugin, so docker tasks are not available
 
 group = 'jp.co.soramitsu'

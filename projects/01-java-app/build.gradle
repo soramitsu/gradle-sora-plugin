@@ -13,6 +13,7 @@ buildscript {
     }
 }
 apply plugin: 'application'
+apply plugin: 'java'
 
 println("Hello from 01-java-app")
 
@@ -27,3 +28,9 @@ dependencies {
 // Define the main class for the application
 group = 'jp.co.soramitsu'
 mainClassName = 'example.App'
+
+soramitsu {
+    docker {
+        jar = new File("build/libs/${project.name}-${project.version}.jar")
+    }
+}
