@@ -25,8 +25,6 @@ class DockerPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         project.afterEvaluate { Project p ->
-            project.pluginManager.apply(DockerRemoteApiPlugin.class)
-
             def ext = project.extensions.getByType(SoramitsuExtension)
             def dockerConfig = ext.extensions.getByType(DockerConfig)
             def registry = dockerConfig.extensions.getByType(DockerRegistryConfig)
@@ -36,6 +34,8 @@ class DockerPlugin implements Plugin<Project> {
                 println(format("soramitsu.docker.jar is null, no docker tasks available"))
                 return
             }
+
+            project.pluginManager.apply(DockerRemoteApiPlugin.class)
 
             def tag = getDefaultTag(project, registry)
             setupDockerVersionTask(p)

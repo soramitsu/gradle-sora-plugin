@@ -8,36 +8,6 @@ import spock.lang.Specification
 
 class VersionTest extends Specification {
 
-    def "version must not be specified manually"() {
-        given:
-        def td = new File("build/_test")
-        td.mkdirs()
-
-        def project = new GradleProjectExecutor(td)
-        project.buildFile.delete()
-
-        when: "build file has no version specified"
-        project.buildFile << """
-            plugins {
-                id '${TestUtils.PLUGIN_ID}'   
-            }
-            group = 'group'
-        """
-        project.runTask("tasks")
-
-        then: "no exception"
-        noExceptionThrown()
-
-        when: "add version manually"
-        project.buildFile << "version = 1;"
-
-        and:
-        project.runTask("tasks")
-
-        then: "build failed"
-        thrown(UnexpectedBuildFailure.class)
-    }
-
     def "group must be specified"() {
         given:
         def td = new File("build/_test")

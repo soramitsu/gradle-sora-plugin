@@ -24,6 +24,7 @@ class SoraPlugin implements Plugin<Project> {
         checkRequirements(project)
         setupRepositories(project)
 
+        applyInfoPlugin(project)
         project.pluginManager.apply(CoveragePlugin.class)
         project.pluginManager.apply(CustomJavaPlugin.class)
 
@@ -40,22 +41,20 @@ class SoraPlugin implements Plugin<Project> {
 
     static void checkRequirements(Project project) {
         project.afterEvaluate { Project p ->
-            if (p.version != null && "unspecified" != p.version && !p.version.toString().empty) {
-                throw new IllegalStateException(format("Please, remove line with 'version' from build.gradle: 'version = ${project.version}'"))
-            }
-
             if (p.group == null || p.group.toString().empty) {
                 throw new IllegalStateException(format("Please, specify 'group'"))
             }
 
             abortIfHasUnwantedPlugins(project)
+        }
+    }
 
-            try {
-                // plugin may throw if it can not find .git directory
-                project.pluginManager.apply(InfoPlugin.class)
-            } catch (Exception e) {
-                println(format("Git plugin thrown exception. Auto versioning will not work. Details ${e.toString()}"))
-            }
+    static void applyInfoPlugin(Project project){
+        try {
+            // plugin may throw if it can not find .git directory
+            project.pluginManager.apply(InfoPlugin.class)
+        } catch (Exception e) {
+            println(format("Git plugin thrown exception. Auto versioning will not work. Details ${e.toString()}"))
         }
     }
 

@@ -17,7 +17,6 @@ class JavaPluginTasksTest extends Specification {
         def project = new GradleProjectExecutor(new File("./projects/${projectName}"))
 
         when: "execute build task"
-        result = project.runTask("printConfig")
         result = project.runTask("build")
         println(result.output)
 
