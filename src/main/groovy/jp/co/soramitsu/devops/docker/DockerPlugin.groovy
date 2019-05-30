@@ -171,8 +171,10 @@ class DockerPlugin implements Plugin<Project> {
         project.tasks.register(SoraTask.dockerClean).configure { Task t ->
             t.group = DOCKER_TASK_GROUP
             t.description = "Clean docker context dir"
-
-            getDockerContextDir(project).deleteDir()
+            t.doLast {
+                println(format('clean docker context dir'))
+                getDockerContextDir(project).deleteDir()
+            }
         }
     }
 
