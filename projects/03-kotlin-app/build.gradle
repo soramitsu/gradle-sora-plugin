@@ -4,8 +4,6 @@
 //    id 'application'
 //}
 
-// this is how we apply plugin for local dev
-apply plugin: 'soramitsu'
 buildscript {
     repositories {
         mavenLocal()
@@ -17,7 +15,10 @@ buildscript {
         }
     }
 }
-
+// this is how we apply plugin for local dev
+plugins {
+    id "jp.co.soramitsu.sora-plugin"
+}
 apply plugin: 'application'
 apply plugin: 'kotlin'
 

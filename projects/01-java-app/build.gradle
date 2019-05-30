@@ -3,7 +3,6 @@
 //    id 'application'
 //}
 
-apply plugin: 'soramitsu'
 buildscript {
     repositories {
         mavenLocal()
@@ -11,6 +10,9 @@ buildscript {
         gradlePluginPortal()
         dependencies { classpath 'jp.co.soramitsu:sora-plugin:+' }
     }
+}
+plugins {
+    id "jp.co.soramitsu.sora-plugin"
 }
 apply plugin: 'application'
 apply plugin: 'java'
