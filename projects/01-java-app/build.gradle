@@ -11,9 +11,7 @@ buildscript {
         dependencies { classpath 'jp.co.soramitsu:sora-plugin:+' }
     }
 }
-plugins {
-    id "jp.co.soramitsu.sora-plugin"
-}
+apply plugin: 'jp.co.soramitsu.sora-plugin'
 apply plugin: 'application'
 apply plugin: 'java'
 

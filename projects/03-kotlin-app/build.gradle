@@ -16,9 +16,7 @@ buildscript {
     }
 }
 // this is how we apply plugin for local dev
-plugins {
-    id "jp.co.soramitsu.sora-plugin"
-}
+apply plugin: 'jp.co.soramitsu.sora-plugin'
 apply plugin: 'application'
 apply plugin: 'kotlin'
 

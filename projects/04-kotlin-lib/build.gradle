@@ -9,10 +9,7 @@ buildscript {
         }
     }
 }
-plugins {
-    id "jp.co.soramitsu.sora-plugin"
-}
-
+apply plugin: 'jp.co.soramitsu.sora-plugin'
 apply plugin: 'kotlin'
 
 // this project does not have 'application' plugin, so docker tasks are not available
