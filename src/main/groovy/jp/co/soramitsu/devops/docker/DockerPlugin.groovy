@@ -37,7 +37,7 @@ class DockerPlugin implements Plugin<Project> {
 
             project.pluginManager.apply(DockerRemoteApiPlugin.class)
 
-            def tag = getDefaultTag(project, registry)
+            def tag = getDefaultTag(project, registry, dockerConfig)
             setupDockerVersionTask(p)
             setupDockerCleanTask(p)
             setupDockerfileCreateTask(p, jar)
@@ -47,7 +47,9 @@ class DockerPlugin implements Plugin<Project> {
         }
     }
 
-    static String getDefaultTag(Project project, DockerRegistryConfig registry) {
+    static String getDefaultTag(Project project,
+                                DockerRegistryConfig registry,
+                                DockerConfig dockerConfig) {
         def parts = []
         parts << registry?.url
         parts << project.extensions.getByType(SoramitsuExtension)?.projectGroup
@@ -56,8 +58,11 @@ class DockerPlugin implements Plugin<Project> {
         parts = parts.stream()
                 .filter({ p -> p != null })
                 .collect(Collectors.joining("/"))
-
-        return Sanitize.tag("${parts}:${project.version}")
+        def tag = dockerConfig.tag
+        if (tag == null) {
+            tag = project.version
+        }
+        return Sanitize.tag("${parts}:$tag")
 
     }
 
@@ -158,7 +163,7 @@ class DockerPlugin implements Plugin<Project> {
             -XX:+PrintFlagsFinal -XshowSettings:vm \${JAVA_OPTIONS}"
             """
             t.copyFile jar.name, "/${jar.name}"
-            t.defaultCommand  "sh", "-c", "java \${JAVA_OPTIONS} -Djava.security.egd=file:/dev/./urandom -jar /${jar.name}"
+            t.defaultCommand "sh", "-c", "java \${JAVA_OPTIONS} -Djava.security.egd=file:/dev/./urandom -jar /${jar.name}"
         }
     }
 

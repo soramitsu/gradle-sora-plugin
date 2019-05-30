@@ -7,7 +7,7 @@ import spock.lang.Specification
 
 class TestUtils extends Specification {
 
-    static final String PLUGIN_ID = "soramitsu"
+    static final String PLUGIN_ID = "jp.co.soramitsu.sora-plugin"
 
     static final def apps = [
             '01-java-app',

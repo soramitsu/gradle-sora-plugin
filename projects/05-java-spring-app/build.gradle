@@ -1,4 +1,3 @@
-apply plugin: 'soramitsu'
 buildscript {
 	repositories {
 		mavenLocal()
@@ -10,7 +9,9 @@ buildscript {
 		}
 	}
 }
-
+plugins {
+	id "jp.co.soramitsu.sora-plugin"
+}
 apply plugin: 'application'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
