@@ -33,6 +33,6 @@ script:
 
 deploy:
   provider: script
+  script: bash publish.sh
   on:
     tags: true
-  script: ./publish.sh
