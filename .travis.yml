@@ -1,0 +1,37 @@
+language: java
+jdk:
+- openjdk8
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+addons:
+  apt:
+    packages:
+      - docker-ce
+services:
+  - docker
+env:
+  global:
+  # GRADLE_KEY
+  - secure: LeZMp3ceWZcE0XK3XB5U8aRz5Y60CAEnqdKIQiDwOCSg5mreidqskAglYUhmfCbv0Me7KBD7x5SQqYC5kLpZMqkbpaxiJAhsh2fjK/XqnriL5WYp8Lg8DLIk1FcgqZ523wmaKBrpT3DodlU5AWA1Vqmy3amfr9SkLNLi9x0/AgYcPjt/jjy9+VXV+PCc7q7qj0PrqcMwEbk5YXZAYPovdgWi3vA75lg9RR4UxxonSZhjHV0Ceq45dm2/nqoWpt32ivWFvtuHVehR+EYdvTZxZ8oMzQV4FddoftetvpekB1IIs7EOwOYTd1hifLyIR6Gx3My2xi/VDG7CosCTINN+kLU7S5ljhbcxRhWYlXeqY5jOXIvhkp+zpf2Tn/LiwGBbB720HMhlKAkVNe3eErPqR1cUdFVIdmSfy3SJzJ3ziaxGHpBB/v3OvCf/gMdUg8K4NgyLX1mWU8Ga2wWZTc7z4j7tZYBijXybZqlv8eEnrt7gulTx0ce+bAzhsTnBaANyVFlz7/bdVSjaJr1KF1RenLSX0D7KX4Ja3rkLXzzFWoBbixU+LAwW6iIJgd6V3BJyBGzRjaYtfVlGaLi0Cb/FiUlIcamf+Z5igerdDQ9pUG1bfKQGEvN9AE0qM0wlgpZD8DmqkSKTb3qntmVqgJjIHJuvWv/UR6iDLYAv+ZjqiOw=
+  # GRADLE_SECRET
+  - secure: txsxXJ0sDEdrFk80x+ULiIBMUFEsD1t7QY5WljbHHBV+qU4DQDq7pXhpMFnk+UtsC8jySwJXY5Ye+7yE8bzWXgsPoG27GXznAcntlnDmtzFMyBKBcdEMNLYmbhi1UiZrF19W/luRBONDirN12oM6wYClFw/Aldxa4TaFcJF57wnrRYhVdlLNLCeEWBXmLDmImdqU65dFOsSdXwpzKlXFnIKLazfdK0Ry/W69SztGUvLL6GyulF76Q6jj4kWdmQi/SM/o+fD0K8p1pFxwnovoso1sst8u2jP4UqpGUA5R+MOeENDsA4SkOsXXxO5pAGVnj4ov1bxR5LOrW8PsP0fs+STvJWjGbvx1UCTdak/cWnIdV2NDc1VK5+fWKjbAqhCIAipA8G5hnHv91sHT7Ow136oQq4caNEhQFNkhaebbHdx0sS+PylrxYmNjNkRGaMiFCLTihy4WbKliYQtKBBgJwmO2rQ3XvbBaiEmneDgDBr8mh+yTZsILySttMStDM8iD8yAyJByMyZQCDhZM7gurMmxe5xVX40d2FjMmKtPL1F1K0+KIIb9yJHdu7qD9hvWZzzZWCilepD9uTWWbSa+BegsXVtg+sr2OqQ84pXnc8kdErYvs//pkNhWGBa1H1DpHGRKL5h8tUiqV6lUuGT/rIr4hH8JJU1cSa69eM49BbT0=
+
+before_script:
+  - echo gradle.publish.key=$GRADLE_KEY >> "$HOME_DIR/.gradle/gradle.properties"
+  - echo gradle.publish.secret=$GRADLE_SECRET >> "$HOME_DIR/.gradle/gradle.properties"
+
+script:
+  - ./gradlew --daemon
+  - ./gradlew build -x test
+  - ./gradlew test
+
+deploy:
+  provider: script
+  on:
+    tags: true
+  script: ./publish.sh

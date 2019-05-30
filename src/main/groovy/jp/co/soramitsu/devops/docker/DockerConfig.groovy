@@ -18,6 +18,10 @@ class DockerConfig {
     @Optional
     String tag
 
+    @Input
+    @Optional
+    String version
+
     private Project project
 
     DockerConfig(Project project) {
