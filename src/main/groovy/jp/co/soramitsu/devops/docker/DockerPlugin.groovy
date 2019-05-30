@@ -172,7 +172,7 @@ class DockerPlugin implements Plugin<Project> {
             t.group = DOCKER_TASK_GROUP
             t.description = "Clean docker context dir"
             t.doLast {
-                println 'clean docker context dir'
+                println(format('clean docker context dir'))
                 getDockerContextDir(project).deleteDir()
             }
         }
