@@ -40,6 +40,7 @@ soramitsu {
     # path to output JAR which is going to be dockerized
     jar = jar = new File("build/libs/${project.name}-${project.version}.jar") 
     # manually specified docker tag. if null, automatic versioning based on git is used 
+    # it replaces only 'version' part, e.g. ${name}:${tag}. Example: soramitsu/example:${tag}
     tag = "custom-tag"  
     # to enable dockerPush task, define registry credentials
     registry {

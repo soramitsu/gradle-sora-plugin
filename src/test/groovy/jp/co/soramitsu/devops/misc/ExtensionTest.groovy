@@ -82,13 +82,13 @@ class ExtensionTest extends Specification {
             }
             group = 'group'
             
-            
             soramitsu {
               projectGroup = '${projectGroup}'
               docker {
-                tag = '${tag}'
+                tag = "${tag}"
                 jar = new File('${jar}')
-                registry {}
+                registry {
+                }
               }
             }
         """

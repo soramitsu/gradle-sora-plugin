@@ -6,6 +6,8 @@ import org.gradle.testkit.runner.GradleRunner
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+import java.util.function.BiConsumer
+
 
 class GradleProjectExecutor {
 
