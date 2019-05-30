@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/soramitsu/gradle-sora-plugin.svg?branch=master)](https://travis-ci.org/soramitsu/gradle-sora-plugin)
+
 # gradle-devops-helper
 
 Min supported gradle 4.8
@@ -33,12 +35,12 @@ https://plugins.gradle.org/plugin/jp.co.soramitsu.sora-plugin
 All fields are optional.
 
 build.gradle:
-```
+```gradle
 soramitsu {
   projectGroup = 'sora' # define namespace for your project. default: null
   docker {
     # path to output JAR which is going to be dockerized
-    jar = jar = new File("build/libs/${project.name}-${project.version}.jar") 
+    jar = new File("build/libs/${project.name}-${project.version}.jar") 
     # manually specified docker tag. if null, automatic versioning based on git is used 
     # it replaces only 'version' part, e.g. ${name}:${tag}. Example: soramitsu/example:${tag}
     tag = "custom-tag"  
@@ -54,7 +56,7 @@ soramitsu {
 ```
 
 Docker registry data can be defined from env vars. Env vars ALWAYS override any value from build.gradle:
-```
+```bash
 DOCKER_REGISTRY_URL="https://nexus.iroha.tech:19001"
 DOCKER_REGISTRY_USERNAME="bogdan"
 DOCKER_REGISTRY_PASSWORD="password"
