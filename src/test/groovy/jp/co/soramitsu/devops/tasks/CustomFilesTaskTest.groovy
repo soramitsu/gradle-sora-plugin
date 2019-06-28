@@ -1,6 +1,6 @@
 package jp.co.soramitsu.devops.tasks
 
-
+import jp.co.soramitsu.devops.SoraTask
 import jp.co.soramitsu.devops.utils.GradleProjectExecutor
 import jp.co.soramitsu.devops.utils.TestUtils
 import spock.lang.Specification
@@ -32,13 +32,13 @@ class CustomFilesTaskTest extends Specification {
               }
             }
         """
-        result = project.runTask("tasks")
+        result = project.runTask(SoraTask.dockerCopyFiles)
         println(result.output)
 
         then: "has completed custom file copy task"
         new File(project.projectDir.path + project.buildFile.path).exists()
 
         where:
-        projectName << TestUtils.apps
+        projectName << "testproject"
     }
 }

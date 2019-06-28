@@ -44,17 +44,4 @@ jar {
 				'Main-Class': 'example.javaspringapp.Application'
 	}
 }
-
-            plugins {
-                id 'jp.co.soramitsu.sora-plugin'   
-            }
-            group = 'group'
-            
-            soramitsu {
-              docker {
-                tag = 'test'
-                jar = new File('jar.jar')
-                customFiles = '[file:./projects/05-java-spring-app/build.gradle]'
-              }
-            }
         

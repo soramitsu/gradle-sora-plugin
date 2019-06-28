@@ -7,7 +7,6 @@ import org.gradle.testkit.runner.BuildResult
 import spock.lang.Specification
 import spock.lang.Unroll
 
-
 class TasksTest extends Specification {
 
     @Unroll
