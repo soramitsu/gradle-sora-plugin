@@ -8,7 +8,7 @@ import static jp.co.soramitsu.devops.utils.TestUtils.taskSucceeded
 
 class ExtensionTest extends Specification {
 
-    def "all fiels are filled for extension"() {
+    def "all fields are filled for extension"() {
         given:
         def td = new File("build/_test")
         td.mkdirs()

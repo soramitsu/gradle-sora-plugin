@@ -118,6 +118,7 @@ class DockerPlugin implements Plugin<Project> {
                     SoraTask.dockerClean,
                     SoraTask.build,
                     SoraTask.dockerCopyJar,
+                    SoraTask.dockerCopyFiles,
                     SoraTask.dockerfileCreate
             ])
 
@@ -149,14 +150,15 @@ class DockerPlugin implements Plugin<Project> {
             println(format("Task ${SoraTask.dockerCopyFiles} has been omitted since no files were supplied."))
             return
         }
-        project.tasks.register(SoraTask.dockerCopyFiles, Dockerfile).configure { Dockerfile t ->
+        project.tasks.register(SoraTask.dockerCopyFiles, Copy).configure { Copy t ->
             t.group = DOCKER_TASK_GROUP
             t.description = "Copy custom files to ${getDockerContextDir(project).path}"
-            t.dependsOn(SoraTask.dockerfileCreate)
 
             customFiles.each { source, destination ->
-                println(format("File mapping: ${source} -> /${destination}"))
-                t.addFile(source, "/$destination")
+                def insidePath = getDockerContextRelativePath(project, destination)
+                println(format("File mapping: $source -> $insidePath"))
+                t.from(source)
+                t.into(insidePath)
             }
         }
     }
@@ -165,7 +167,7 @@ class DockerPlugin implements Plugin<Project> {
         project.tasks.register(SoraTask.dockerfileCreate, Dockerfile).configure { Dockerfile t ->
             t.group = DOCKER_TASK_GROUP
             t.description = "Creates dockerfile in ${getDockerContextDir(project).path}"
-            t.dependsOn(SoraTask.dockerCopyJar)
+            t.dependsOn(SoraTask.dockerCopyJar, SoraTask.dockerCopyFiles)
 
             t.from 'openjdk:8u191-jre-alpine'
             t.label([
@@ -181,11 +183,17 @@ class DockerPlugin implements Plugin<Project> {
             -XX:MaxRAMFraction=\${MAX_RAM_FRACTION} -XX:+UseContainerSupport \\
             -XX:+PrintFlagsFinal -XshowSettings:vm \${JAVA_OPTIONS}"
             """
+            def customFiles = dockerConfig.customFiles
+            if (customFiles == null || customFiles.isEmpty()) {
+                customFiles.each { _, destination ->
+                    t.addFile(getDockerContextRelativePath(project, destination), destination)
+                }
+            }
             t.copyFile jar.name, "/${jar.name}"
 
             def args = dockerConfig.args
 
-            t.defaultCommand "sh", "-c", "java \${JAVA_OPTIONS} -Djava.security.egd=file:/dev/./urandom -jar /${jar.name}", "${args}"
+            t.defaultCommand "sh", "-c", "java \${JAVA_OPTIONS} -Djava.security.egd=file:/dev/./urandom -jar /${jar.name} $args"
         }
     }
 
@@ -202,5 +210,9 @@ class DockerPlugin implements Plugin<Project> {
 
     static File getDockerContextDir(Project project) {
         return project.file("${project.buildDir}/docker")
+    }
+
+    static String getDockerContextRelativePath(Project project, String path) {
+        return getDockerContextDir(project).path + path
     }
 }

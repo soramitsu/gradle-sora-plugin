@@ -28,7 +28,7 @@ class DockerConfig {
 
     @Input
     @Optional
-    String[] args
+    String args
 
     private Project project
 
