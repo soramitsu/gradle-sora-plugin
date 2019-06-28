@@ -28,7 +28,7 @@ class CustomFilesTaskTest extends Specification {
               docker {
                 tag = '${tag}'
                 jar = new File('${jar}')
-                customFiles = '$customFiles'
+                customFiles = $customFiles
               }
             }
         """
