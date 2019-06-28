@@ -42,7 +42,7 @@ class DockerPlugin implements Plugin<Project> {
             setupDockerCleanTask(p)
             setupDockerfileCreateTask(p, jar, dockerConfig)
             setupDockerCopyJarTask(p, jar)
-            setupDockerCopyCustomFilesTask(p, dockerConfig)
+            setupDockerCopyFilesTask(p, dockerConfig)
             setupDockerBuildTask(p, tag)
             setupDockerPushTask(p, registry, tag)
         }
@@ -144,16 +144,16 @@ class DockerPlugin implements Plugin<Project> {
         }
     }
 
-    static void setupDockerCopyCustomFilesTask(Project project, DockerConfig dockerConfig) {
-        def customFiles = dockerConfig.customFiles
-        if (customFiles == null || customFiles.isEmpty()) {
-            println(format("Task ${SoraTask.dockerCopyFiles} has been omitted since no files were supplied."))
-            return
-        }
+    static void setupDockerCopyFilesTask(Project project, DockerConfig dockerConfig) {
         project.tasks.register(SoraTask.dockerCopyFiles, Copy).configure { Copy t ->
             t.group = DOCKER_TASK_GROUP
             t.description = "Copy custom files to ${getDockerContextDir(project).path}"
 
+            def customFiles = dockerConfig.customFiles
+            if (customFiles == null || customFiles.isEmpty()) {
+                println(format("Task ${SoraTask.dockerCopyFiles} has been omitted since no files were supplied."))
+                return
+            }
             customFiles.each { source, destination ->
                 def insidePath = getDockerContextRelativePath(project, destination)
                 println(format("File mapping: $source -> $insidePath"))
@@ -184,7 +184,7 @@ class DockerPlugin implements Plugin<Project> {
             -XX:+PrintFlagsFinal -XshowSettings:vm \${JAVA_OPTIONS}"
             """
             def customFiles = dockerConfig.customFiles
-            if (customFiles == null || customFiles.isEmpty()) {
+            if (customFiles == null || customFiles.get().isEmpty()) {
                 customFiles.each { _, destination ->
                     t.addFile(getDockerContextRelativePath(project, destination), destination)
                 }
