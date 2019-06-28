@@ -40,8 +40,9 @@ class DockerPlugin implements Plugin<Project> {
             def tag = getDefaultTag(project, registry, dockerConfig)
             setupDockerVersionTask(p)
             setupDockerCleanTask(p)
-            setupDockerfileCreateTask(p, jar)
+            setupDockerfileCreateTask(p, jar, dockerConfig)
             setupDockerCopyJarTask(p, jar)
+            setupDockerCopyCustomFilesTask(p, dockerConfig)
             setupDockerBuildTask(p, tag)
             setupDockerPushTask(p, registry, tag)
         }
@@ -142,7 +143,25 @@ class DockerPlugin implements Plugin<Project> {
         }
     }
 
-    static void setupDockerfileCreateTask(Project project, @NonNull File jar) {
+    static void setupDockerCopyCustomFilesTask(Project project, DockerConfig dockerConfig) {
+        def customFiles = dockerConfig.customFiles
+        if (customFiles == null || customFiles.isEmpty()) {
+            println(format("Task ${SoraTask.dockerCopyFiles} has been omitted since no files were supplied."))
+            return
+        }
+        project.tasks.register(SoraTask.dockerCopyFiles, Dockerfile).configure { Dockerfile t ->
+            t.group = DOCKER_TASK_GROUP
+            t.description = "Copy custom files to ${getDockerContextDir(project).path}"
+            t.dependsOn(SoraTask.dockerfileCreate)
+
+            customFiles.each { source, destination ->
+                println(format("File mapping: ${source} -> /${destination}"))
+                t.addFile(source, "/$destination")
+            }
+        }
+    }
+
+    static void setupDockerfileCreateTask(Project project, @NonNull File jar, DockerConfig dockerConfig) {
         project.tasks.register(SoraTask.dockerfileCreate, Dockerfile).configure { Dockerfile t ->
             t.group = DOCKER_TASK_GROUP
             t.description = "Creates dockerfile in ${getDockerContextDir(project).path}"
@@ -163,7 +182,10 @@ class DockerPlugin implements Plugin<Project> {
             -XX:+PrintFlagsFinal -XshowSettings:vm \${JAVA_OPTIONS}"
             """
             t.copyFile jar.name, "/${jar.name}"
-            t.defaultCommand "sh", "-c", "java \${JAVA_OPTIONS} -Djava.security.egd=file:/dev/./urandom -jar /${jar.name}"
+
+            def args = dockerConfig.args
+
+            t.defaultCommand "sh", "-c", "java \${JAVA_OPTIONS} -Djava.security.egd=file:/dev/./urandom -jar /${jar.name}", "${args}"
         }
     }
 
