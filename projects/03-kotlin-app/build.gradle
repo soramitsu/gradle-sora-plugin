@@ -63,4 +63,3 @@ jar {
                 'Main-Class': 'example.App'
     }
 }
-        

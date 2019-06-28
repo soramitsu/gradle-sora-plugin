@@ -44,4 +44,3 @@ jar {
 				'Main-Class': 'example.javaspringapp.Application'
 	}
 }
-        
