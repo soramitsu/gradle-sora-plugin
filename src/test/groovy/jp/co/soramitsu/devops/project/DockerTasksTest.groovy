@@ -26,26 +26,29 @@ class DockerTasksTest extends Specification {
         projectName << TestUtils.apps
     }
 
-//    @Unroll
-//    def "[#projectName] copies custom files"(){
-//        given:
-//        def result
-//        def build = new File("./projects/${projectName}")
-//        def docker = new File(build, 'docker')
-//        def project = new GradleProjectExecutor(build)
-//
-//        when:
-//        result = project.runTask(SoraTask.dockerCopyFiles)
-//
-//        println(docker.list())
-//
-//        then:
-//        taskSucceeded(result, SoraTask.dockerCopyFiles)
-//        result.output.contains("mapping")
-//        docker.exists()
-//
-//
-//        where:
-//        projectName = '01-java-app'
-//    }
+    @Unroll
+    def "[#projectName] copies custom files"() {
+        given:
+        def result
+        def prjdir = new File("./projects/${projectName}")
+        def build = new File(prjdir, 'build')
+        def docker = new File(build, 'docker')
+        def project = new GradleProjectExecutor(prjdir)
+
+        when:
+        result = project.runTask(SoraTask.dockerCopyFiles)
+
+        then:
+        taskSucceeded(result, SoraTask.dockerCopyFiles)
+        result.output.contains("mapping")
+        docker.exists()
+        docker.list().contains("1")
+        docker.list().contains("build.gradle")
+        new File(docker, "1").list().contains("2")
+        new File(docker, "1").list().contains("settings.gradle")
+        new File(docker, "1/2").list().contains("gradlew")
+
+        where:
+        projectName = '01-java-app'
+    }
 }
