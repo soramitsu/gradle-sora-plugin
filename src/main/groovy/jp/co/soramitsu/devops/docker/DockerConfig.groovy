@@ -22,6 +22,14 @@ class DockerConfig {
     @Optional
     String version
 
+    @Input
+    @Optional
+    Map<String, String> files
+
+    @Input
+    @Optional
+    String args
+
     private Project project
 
     DockerConfig(Project project) {

@@ -15,6 +15,7 @@ class SoraTask {
     public static final String dockerfileCreate = "dockerfileCreate"
     public static final String dockerPush = "dockerPush"
     public static final String dockerCopyJar = "dockerCopyJar"
+    public static final String dockerCopyFiles = "dockerCopyFiles"
     public static final String dockerBuild = "dockerBuild"
     public static final String dockerClean = "dockerClean"
     public static final String dockerVersion = "dockerVersion"

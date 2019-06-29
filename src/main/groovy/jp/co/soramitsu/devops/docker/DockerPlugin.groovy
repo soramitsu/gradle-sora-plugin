@@ -40,8 +40,9 @@ class DockerPlugin implements Plugin<Project> {
             def tag = getDefaultTag(project, registry, dockerConfig)
             setupDockerVersionTask(p)
             setupDockerCleanTask(p)
-            setupDockerfileCreateTask(p, jar)
+            setupDockerfileCreateTask(p, jar, dockerConfig)
             setupDockerCopyJarTask(p, jar)
+            setupDockerCopyFilesTask(p, dockerConfig)
             setupDockerBuildTask(p, tag)
             setupDockerPushTask(p, registry, tag)
         }
@@ -117,6 +118,7 @@ class DockerPlugin implements Plugin<Project> {
                     SoraTask.dockerClean,
                     SoraTask.build,
                     SoraTask.dockerCopyJar,
+                    SoraTask.dockerCopyFiles,
                     SoraTask.dockerfileCreate
             ])
 
@@ -142,7 +144,33 @@ class DockerPlugin implements Plugin<Project> {
         }
     }
 
-    static void setupDockerfileCreateTask(Project project, @NonNull File jar) {
+    static void setupDockerCopyFilesTask(Project project, @NonNull DockerConfig dockerConfig) {
+        project.tasks.register(SoraTask.dockerCopyFiles, Copy).configure { Copy t ->
+            t.group = DOCKER_TASK_GROUP
+            t.description = "Copy custom files to ${getDockerContextDir(project).path}"
+            t.into(getDockerContextDir(project))
+
+            def customFiles = dockerConfig.files
+            if (customFiles == null || customFiles.isEmpty()) {
+                println(format("Task ${SoraTask.dockerCopyFiles} skipped."))
+                return
+            }
+
+            // copy files to context dir
+            customFiles.each { source, destination ->
+                def insidePath = getDockerContextRelativePath(project, destination)
+                insidePath.parentFile.mkdirs() // create parent dirs if needed
+
+                t.from(source) {
+                    println(format("File mapping: $source -> $destination"))
+                    // relative path to docker build context dir
+                    into(new File(destination).parentFile)
+                }
+            }
+        }
+    }
+
+    static void setupDockerfileCreateTask(Project project, @NonNull File jar, @NonNull DockerConfig dockerConfig) {
         project.tasks.register(SoraTask.dockerfileCreate, Dockerfile).configure { Dockerfile t ->
             t.group = DOCKER_TASK_GROUP
             t.description = "Creates dockerfile in ${getDockerContextDir(project).path}"
@@ -162,8 +190,25 @@ class DockerPlugin implements Plugin<Project> {
             -XX:MaxRAMFraction=\${MAX_RAM_FRACTION} -XX:+UseContainerSupport \\
             -XX:+PrintFlagsFinal -XshowSettings:vm \${JAVA_OPTIONS}"
             """
+            def customFiles = dockerConfig.files
+            if (customFiles == null || customFiles.isEmpty()) {
+                return
+            }
+
+            // copy files from context dir to dst
+            customFiles.each { _, dst ->
+                // remove leading slash from path
+                def from = dst.replaceAll(/^\//, '')
+                t.copyFile(from, dst)
+            }
+
+            // copy jar
             t.copyFile jar.name, "/${jar.name}"
-            t.defaultCommand "sh", "-c", "java \${JAVA_OPTIONS} -Djava.security.egd=file:/dev/./urandom -jar /${jar.name}"
+
+            // if null, then use empty string
+            def args = dockerConfig.args ?: ""
+
+            t.defaultCommand "sh", "-c", "java \${JAVA_OPTIONS} -Djava.security.egd=file:/dev/./urandom -jar /${jar.name} $args"
         }
     }
 
@@ -180,5 +225,9 @@ class DockerPlugin implements Plugin<Project> {
 
     static File getDockerContextDir(Project project) {
         return project.file("${project.buildDir}/docker")
+    }
+
+    static File getDockerContextRelativePath(Project project, String path) {
+        return new File(getDockerContextDir(project), path)
     }
 }
