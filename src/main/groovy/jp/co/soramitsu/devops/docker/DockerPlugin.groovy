@@ -6,7 +6,7 @@ import com.bmuschko.gradle.docker.tasks.RegistryCredentialsAware
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
-import groovy.util.logging.Log
+import groovy.util.logging.Slf4j
 import jp.co.soramitsu.devops.SoraTask
 import jp.co.soramitsu.devops.SoramitsuExtension
 import org.eclipse.jgit.annotations.NonNull
@@ -19,7 +19,7 @@ import java.util.stream.Collectors
 
 import static jp.co.soramitsu.devops.utils.PrintUtils.format
 
-@Log
+@Slf4j
 class DockerPlugin implements Plugin<Project> {
 
     static final String DOCKER_TASK_GROUP = "docker"

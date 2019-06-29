@@ -1,6 +1,7 @@
 package jp.co.soramitsu.devops
 
-import groovy.util.logging.Log
+
+import groovy.util.logging.Slf4j
 import jp.co.soramitsu.devops.coverage.CoveragePlugin
 import jp.co.soramitsu.devops.docker.DockerConfig
 import jp.co.soramitsu.devops.docker.DockerPlugin
@@ -18,7 +19,7 @@ import java.util.stream.Collectors
 
 import static jp.co.soramitsu.devops.utils.PrintUtils.format
 
-@Log
+@Slf4j
 class SoraPlugin implements Plugin<Project> {
 
     void apply(Project project) {
