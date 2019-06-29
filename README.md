@@ -40,6 +40,8 @@ build.gradle:
 soramitsu {
   projectGroup = 'sora' # define namespace for your project. default: null
   docker {
+    # base docker image to be used (Dockerfile FROM instruction)
+    baseImage = '8u191-jre-alpine'
     # path to output JAR which is going to be dockerized
     jar = new File("build/libs/${project.name}-${project.version}.jar") 
     # manually specified docker tag. if null, automatic versioning based on git is used 
