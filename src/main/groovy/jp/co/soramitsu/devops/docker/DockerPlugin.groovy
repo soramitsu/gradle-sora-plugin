@@ -40,7 +40,7 @@ class DockerPlugin implements Plugin<Project> {
             def tag = getDefaultTag(project, registry, dockerConfig)
             setupDockerVersionTask(p)
             setupDockerCleanTask(p)
-            setupDockerfileCreateTask(p, jar, dockerConfig)
+            setupDockerfileCreateTask(p, dockerConfig)
             setupDockerCopyJarTask(p, jar)
             setupDockerCopyFilesTask(p, dockerConfig)
             setupDockerBuildTask(p, tag)
@@ -170,13 +170,15 @@ class DockerPlugin implements Plugin<Project> {
         }
     }
 
-    static void setupDockerfileCreateTask(Project project, @NonNull File jar, @NonNull DockerConfig dockerConfig) {
+    static void setupDockerfileCreateTask(Project project, @NonNull DockerConfig dockerConfig) {
         project.tasks.register(SoraTask.dockerfileCreate, Dockerfile).configure { Dockerfile t ->
+            def jar = dockerConfig.jar
+
             t.group = DOCKER_TASK_GROUP
             t.description = "Creates dockerfile in ${getDockerContextDir(project).path}"
             t.dependsOn(SoraTask.dockerCopyJar)
 
-            t.from 'openjdk:8u191-jre-alpine'
+            t.from dockerConfig.baseImage
             t.label([
                     "version"     : "${project.version}",
                     "built-date"  : "${new Date()}",
