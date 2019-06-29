@@ -75,10 +75,10 @@ DOCKER_REGISTRY_EMAIL="bogdan@soramitsu.co.jp"
 
 ## Features
 
-- [x] automatic versioning based on git ([read more](https://github.com/palantir/gradle-git-version/))
+- [x] automatic versioning based on git ([uses gitVersion](https://github.com/palantir/gradle-git-version/))
 - [x] build does not invoke tests (only with plugin `java`)
 - [ ] separate `check` task for static code analysis; formatting analysis
-- [x] `coverage` task, which invokes all tests and   
+- [x] `coverage` task, which invokes all tests and calculates coverage.
 - [x] `dockerBuild` task to build docker image
 - [x] automatic tag generation. Tag consists of `${url}/${projectGroup}/${project.name}:${project.version}`
   - url - url of docker registry without http(s)://
