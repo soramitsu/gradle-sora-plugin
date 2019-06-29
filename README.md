@@ -52,9 +52,9 @@ soramitsu {
       password = 'password'
       email = 'bogdan@soramitsu.co.jp'  # optional
     }
-    # optional custom files that will be added to the docker image
+    # files that will be added to the docker image (optional)
     # host fs: docker image fs
-    customFiles = [file.txt: /file.txt]
+    files = [local-file.txt: /file.txt]
     # optional startup arguments for java
     # java -jar ... $args
     args = "-version"

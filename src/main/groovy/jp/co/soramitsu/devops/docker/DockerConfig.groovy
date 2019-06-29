@@ -24,7 +24,7 @@ class DockerConfig {
 
     @Input
     @Optional
-    Map<String, String> customFiles
+    Map<String, String> files
 
     @Input
     @Optional
