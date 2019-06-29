@@ -6,6 +6,7 @@ import com.bmuschko.gradle.docker.tasks.RegistryCredentialsAware
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import groovy.util.logging.Log
 import jp.co.soramitsu.devops.SoraTask
 import jp.co.soramitsu.devops.SoramitsuExtension
 import org.eclipse.jgit.annotations.NonNull
@@ -18,6 +19,7 @@ import java.util.stream.Collectors
 
 import static jp.co.soramitsu.devops.utils.PrintUtils.format
 
+@Log
 class DockerPlugin implements Plugin<Project> {
 
     static final String DOCKER_TASK_GROUP = "docker"
@@ -31,7 +33,7 @@ class DockerPlugin implements Plugin<Project> {
 
             def jar = dockerConfig.jar
             if (jar == null) {
-                println(format("soramitsu.docker.jar is null, no docker tasks available"))
+                log.info(format("soramitsu.docker.jar is null, no docker tasks available"))
                 return
             }
 
@@ -77,16 +79,16 @@ class DockerPlugin implements Plugin<Project> {
     static void setupDockerPushTask(Project project, DockerRegistryConfig registry, String tag) {
         def errorMessageHeader = "Task ${SoraTask.dockerPush} is not available."
         if (registry == null) {
-            println(format("$errorMessageHeader Define docker registry."))
+            log.warn(format("$errorMessageHeader Define docker registry."))
             return
         } else if (registry.url == null) {
-            println(format("$errorMessageHeader Define docker registry 'url' param."))
+            log.warn(format("$errorMessageHeader Define docker registry 'url' param."))
             return
         } else if (registry.username == null) {
-            println(format("$errorMessageHeader Define docker registry 'username' param."))
+            log.warn(format("$errorMessageHeader Define docker registry 'username' param."))
             return
         } else if (registry.password == null) {
-            println(format("$errorMessageHeader Define docker registry 'password' param."))
+            log.warn(format("$errorMessageHeader Define docker registry 'password' param."))
             return
         }
 
@@ -127,7 +129,7 @@ class DockerPlugin implements Plugin<Project> {
             t.inputDir.set getDockerContextDir(project)
 
             t.doLast {
-                println(format("Built docker image with tags ${tag}"))
+                log.info(format("Built docker image with tags ${tag}"))
             }
         }
     }
@@ -138,7 +140,7 @@ class DockerPlugin implements Plugin<Project> {
             t.description = "Copy jar file to ${getDockerContextDir(project).path}"
             t.dependsOn(SoraTask.build)
 
-            println(format("JAR: ${jar.path}"))
+            log.debug(format("JAR: ${jar.path}"))
             t.from(jar)
             t.into(getDockerContextDir(project))
         }
@@ -152,7 +154,7 @@ class DockerPlugin implements Plugin<Project> {
 
             def customFiles = dockerConfig.files
             if (customFiles == null || customFiles.isEmpty()) {
-                println(format("Task ${SoraTask.dockerCopyFiles} skipped."))
+                log.info(format("Task ${SoraTask.dockerCopyFiles} skipped."))
                 return
             }
 
@@ -162,7 +164,7 @@ class DockerPlugin implements Plugin<Project> {
                 insidePath.parentFile.mkdirs() // create parent dirs if needed
 
                 t.from(source) {
-                    println(format("File mapping: $source -> $destination"))
+                    log.info(format("File mapping: $source -> $destination"))
                     // relative path to docker build context dir
                     into(new File(destination).parentFile)
                 }
@@ -219,7 +221,7 @@ class DockerPlugin implements Plugin<Project> {
             t.group = DOCKER_TASK_GROUP
             t.description = "Clean docker context dir"
             t.doLast {
-                println(format('clean docker context dir'))
+                log.info(format('clean docker context dir'))
                 getDockerContextDir(project).deleteDir()
             }
         }

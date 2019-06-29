@@ -1,11 +1,11 @@
 package jp.co.soramitsu.devops
 
+import groovy.util.logging.Log
 import jp.co.soramitsu.devops.coverage.CoveragePlugin
 import jp.co.soramitsu.devops.docker.DockerConfig
 import jp.co.soramitsu.devops.docker.DockerPlugin
 import jp.co.soramitsu.devops.docker.DockerRegistryConfig
 import jp.co.soramitsu.devops.misc.InfoPlugin
-import org.apache.tools.ant.taskdefs.Java
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -18,6 +18,7 @@ import java.util.stream.Collectors
 
 import static jp.co.soramitsu.devops.utils.PrintUtils.format
 
+@Log
 class SoraPlugin implements Plugin<Project> {
 
     void apply(Project project) {
@@ -77,7 +78,7 @@ class SoraPlugin implements Plugin<Project> {
             // plugin may throw if it can not find .git directory
             project.pluginManager.apply(InfoPlugin.class)
         } catch (Exception e) {
-            println(format("Git plugin thrown exception. Auto versioning will not work. Details ${e.toString()}"))
+            log.warn(format("Git plugin thrown exception. Auto versioning will not work. Details ${e.toString()}"))
         }
     }
 
