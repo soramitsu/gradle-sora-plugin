@@ -42,10 +42,6 @@ class SoraPlugin implements Plugin<Project> {
         })
     }
 
-    static void doForSpringApp(Project project, Action<? super Plugin> action) {
-        project.plugins.withId('org.springframework.boot', action)
-    }
-
     static void setupForJavaPlugin(Project project) {
         project.tasks.named(SoraTask.build).configure { t ->
             // build should not depend on check/test

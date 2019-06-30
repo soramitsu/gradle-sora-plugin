@@ -187,11 +187,9 @@ class DockerPlugin implements Plugin<Project> {
                     "built-gradle": "${project.gradle.gradleVersion}"
             ])
             t.instruction "MAINTAINER Bogdan Vaneev <bogdan@soramitsu.co.jp>"
-            t.instruction "ENV MAX_RAM_FRACTION=4"
-            t.instruction """ENV JAVA_OPTIONS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap \\
-            -XX:MaxRAMFraction=\${MAX_RAM_FRACTION} -XX:+UseContainerSupport \\
-            -XX:+PrintFlagsFinal -XshowSettings:vm \${JAVA_OPTIONS}"
+            t.instruction """ENV JAVA_OPTIONS="${getFlagsForCurrentJavaVersion(version)} \${JAVA_OPTIONS}"
             """
+
             if (dockerConfig.files != null) {
                 // copy files from context dir to dst
                 dockerConfig.files.each { _, dst ->
@@ -228,5 +226,32 @@ class DockerPlugin implements Plugin<Project> {
 
     static File getDockerContextRelativePath(Project project, String path) {
         return new File(getDockerContextDir(project), path)
+    }
+
+    static String getFlagsForCurrentJavaVersion(int version) {
+        def flags = []
+        flags << "-XshowSettings:vm"
+        flags << "-XX:+PrintFlagsFinal"
+        switch (version) {
+            case 8:
+            case 9:
+                flags << "-XX:+UnlockExperimentalVMOptions"
+                flags << "-XX:+UseCGroupMemoryLimitForHeap"
+                flags << "-XX:+UseContainerSupport"
+                flags << "-XX:MaxRAMFraction=4"
+                break
+            case 10:
+            case 11:
+                // -XX:InitialRAMPercentage
+                // -XX:MaxRAMPercentage
+                // -XX:MinRAMPercentage
+                flags << "-XX:+UseContainerSupport"
+            case 12:
+            case 13:
+            default:
+                println(format("undefined java version: ${version}"))
+        }
+
+        return flags.join(' ')
     }
 }
