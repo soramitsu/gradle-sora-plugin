@@ -192,7 +192,7 @@ class DockerPlugin implements Plugin<Project> {
             -XX:MaxRAMFraction=\${MAX_RAM_FRACTION} -XX:+UseContainerSupport \\
             -XX:+PrintFlagsFinal -XshowSettings:vm \${JAVA_OPTIONS}"
             """
-            if (dockerConfig.files != null && !dockerConfig.files.isEmpty()) {
+            if (dockerConfig.files != null) {
                 // copy files from context dir to dst
                 dockerConfig.files.each { _, dst ->
                     // remove leading slash from path
