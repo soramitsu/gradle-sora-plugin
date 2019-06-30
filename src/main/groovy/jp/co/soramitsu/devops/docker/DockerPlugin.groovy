@@ -192,16 +192,13 @@ class DockerPlugin implements Plugin<Project> {
             -XX:MaxRAMFraction=\${MAX_RAM_FRACTION} -XX:+UseContainerSupport \\
             -XX:+PrintFlagsFinal -XshowSettings:vm \${JAVA_OPTIONS}"
             """
-            def customFiles = dockerConfig.files
-            if (customFiles == null || customFiles.isEmpty()) {
-                return
-            }
-
-            // copy files from context dir to dst
-            customFiles.each { _, dst ->
-                // remove leading slash from path
-                def from = dst.replaceAll(/^\//, '')
-                t.copyFile(from, dst)
+            if (dockerConfig.files != null && !dockerConfig.files.isEmpty()) {
+                // copy files from context dir to dst
+                dockerConfig.files.each { _, dst ->
+                    // remove leading slash from path
+                    def from = dst.replaceAll(/^\//, '')
+                    t.copyFile(from, dst)
+                }
             }
 
             // copy jar
