@@ -158,13 +158,13 @@ class DockerPlugin implements Plugin<Project> {
 
             // copy files to context dir
             customFiles.each { source, destination ->
-                def insidePath = getDockerContextRelativePath(project, destination)
-                insidePath.parentFile.mkdirs() // create parent dirs if needed
+                def insideParentFile = getDockerContextRelativePath(project, destination).parentFile
+                insideParentFile.mkdirs() // create parent dirs if needed
 
                 t.from(source) {
                     println(format("File mapping: $source -> $destination"))
                     // relative path to docker build context dir
-                    into(new File(destination).parentFile)
+                    into(insideParentFile)
                 }
             }
         }
@@ -176,7 +176,7 @@ class DockerPlugin implements Plugin<Project> {
 
             t.group = DOCKER_TASK_GROUP
             t.description = "Creates dockerfile in ${getDockerContextDir(project).path}"
-            t.dependsOn(SoraTask.dockerCopyJar)
+            t.dependsOn(SoraTask.dockerCopyJar, SoraTask.dockerCopyFiles)
 
             t.from dockerConfig.baseImage
             t.label([
