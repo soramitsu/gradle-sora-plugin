@@ -270,7 +270,7 @@ class DockerPlugin implements Plugin<Project> {
             case 12:
                 return 'openjdk:12-jdk-oracle'
             default:
-                return 'openjdk:8u212-jre-alpine' // default fallback tag
+                return 'openjdk:8-jre-alpine' // default fallback tag
         }
     }
 }
