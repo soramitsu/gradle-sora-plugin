@@ -182,7 +182,7 @@ class DockerPlugin implements Plugin<Project> {
 
             // if baseImage is defined, then use it.
             // otherwise, derive docker image from java version and use it
-            t.from dockerConfig.baseImage?: getBaseDockerImage(version)
+            t.from dockerConfig.baseImage ?: getBaseDockerImage(version)
             t.label([
                     "version"     : "${project.version}",
                     "built-date"  : "${new Date()}",
@@ -262,15 +262,13 @@ class DockerPlugin implements Plugin<Project> {
     }
 
     static String getBaseDockerImage(int javaVersion) {
-        switch (javaVersion) {
-            case 8:
-                return 'openjdk:8-jre-alpine'
-            case 11:
-                return 'openjdk:11-jdk-slim'
-            case 12:
-                return 'openjdk:12-jdk-oracle'
-            default:
-                return 'openjdk:8-jre-alpine' // default fallback tag
+        if (javaVersion == 11) {
+            return 'openjdk:11-jdk-slim'
+        } else if (javaVersion == 12) {
+            return 'openjdk:12-jdk-oracle'
+        } else {
+            // default fallback version
+            return 'openjdk:8-jre-alpine'
         }
     }
 }
