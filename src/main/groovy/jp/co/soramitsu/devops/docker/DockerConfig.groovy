@@ -12,7 +12,8 @@ import org.gradle.api.tasks.Optional
 class DockerConfig {
 
     @Input
-    String baseImage = 'openjdk:8u212-jre-alpine'
+    @Optional
+    String baseImage
 
     @InputFile
     File jar

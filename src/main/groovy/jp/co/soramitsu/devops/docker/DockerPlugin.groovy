@@ -8,6 +8,7 @@ import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import jp.co.soramitsu.devops.SoraTask
 import jp.co.soramitsu.devops.SoramitsuExtension
+import jp.co.soramitsu.devops.utils.JavaUtils
 import org.eclipse.jgit.annotations.NonNull
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -173,12 +174,15 @@ class DockerPlugin implements Plugin<Project> {
     static void setupDockerfileCreateTask(Project project, @NonNull DockerConfig dockerConfig) {
         project.tasks.register(SoraTask.dockerfileCreate, Dockerfile).configure { Dockerfile t ->
             def jar = dockerConfig.jar
+            def version = JavaUtils.getJavaVersion()
 
             t.group = DOCKER_TASK_GROUP
             t.description = "Creates dockerfile in ${getDockerContextDir(project).path}"
             t.dependsOn(SoraTask.dockerCopyJar)
 
-            t.from dockerConfig.baseImage
+            // if baseImage is defined, then use it.
+            // otherwise, derive docker image from java version and use it
+            t.from dockerConfig.baseImage ?: getBaseDockerImage(version)
             t.label([
                     "version"     : "${project.version}",
                     "built-date"  : "${new Date()}",
@@ -187,11 +191,9 @@ class DockerPlugin implements Plugin<Project> {
                     "built-gradle": "${project.gradle.gradleVersion}"
             ])
             t.instruction "MAINTAINER Bogdan Vaneev <bogdan@soramitsu.co.jp>"
-            t.instruction "ENV MAX_RAM_FRACTION=4"
-            t.instruction """ENV JAVA_OPTIONS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap \\
-            -XX:MaxRAMFraction=\${MAX_RAM_FRACTION} -XX:+UseContainerSupport \\
-            -XX:+PrintFlagsFinal -XshowSettings:vm \${JAVA_OPTIONS}"
+            t.instruction """ENV JAVA_OPTIONS="${getJavaOptions(version)}"
             """
+
             if (dockerConfig.files != null) {
                 // copy files from context dir to dst
                 dockerConfig.files.each { _, dst ->
@@ -228,5 +230,45 @@ class DockerPlugin implements Plugin<Project> {
 
     static File getDockerContextRelativePath(Project project, String path) {
         return new File(getDockerContextDir(project), path)
+    }
+
+    static String
+
+    static String getJavaOptions(int version) {
+        def flags = []
+        flags << "-XshowSettings:vm"
+        flags << "-XX:+PrintFlagsFinal"
+        switch (version) {
+            case 8:
+            case 9:
+                flags << "-XX:+UnlockExperimentalVMOptions"
+                flags << "-XX:+UseCGroupMemoryLimitForHeap"
+                flags << "-XX:+UseContainerSupport"
+                flags << "-XX:MaxRAMFraction=2"
+                break
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+                flags << "-XX:MaxRAMPercentage=70"
+                flags << "-XX:MinRAMPercentage=50"
+                flags << "-XX:InitialRAMPercentage=50"
+                break
+            default:
+                throw new IllegalStateException(format("undefined/unsupported java version: ${version}"))
+        }
+
+        return flags.join(' ')
+    }
+
+    static String getBaseDockerImage(int javaVersion) {
+        if (javaVersion == 11) {
+            return 'openjdk:11-jdk-slim'
+        } else if (javaVersion == 12) {
+            return 'openjdk:12-jdk-oracle'
+        } else {
+            // default fallback version
+            return 'openjdk:8-jre-alpine'
+        }
     }
 }
