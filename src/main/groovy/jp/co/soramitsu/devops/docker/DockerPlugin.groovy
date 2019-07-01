@@ -176,7 +176,7 @@ class DockerPlugin implements Plugin<Project> {
 
             t.group = DOCKER_TASK_GROUP
             t.description = "Creates dockerfile in ${getDockerContextDir(project).path}"
-            t.dependsOn(SoraTask.dockerCopyJar, SoraTask.dockerCopyFiles)
+            t.dependsOn(SoraTask.dockerCopyJar)
 
             t.from dockerConfig.baseImage
             t.label([
