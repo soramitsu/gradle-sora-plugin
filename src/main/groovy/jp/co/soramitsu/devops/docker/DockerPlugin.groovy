@@ -264,7 +264,7 @@ class DockerPlugin implements Plugin<Project> {
     static String getBaseDockerImage(int javaVersion) {
         switch (javaVersion) {
             case 8:
-                return 'openjdk:8u212-jre-alpine'
+                return 'openjdk:8-jre-alpine'
             case 11:
                 return 'openjdk:11-jdk-slim'
             case 12:
