@@ -8,6 +8,7 @@ import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import jp.co.soramitsu.devops.SoraTask
 import jp.co.soramitsu.devops.SoramitsuExtension
+import jp.co.soramitsu.devops.utils.JavaUtils
 import org.eclipse.jgit.annotations.NonNull
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -173,12 +174,15 @@ class DockerPlugin implements Plugin<Project> {
     static void setupDockerfileCreateTask(Project project, @NonNull DockerConfig dockerConfig) {
         project.tasks.register(SoraTask.dockerfileCreate, Dockerfile).configure { Dockerfile t ->
             def jar = dockerConfig.jar
+            def version = JavaUtils.getJavaVersion()
 
             t.group = DOCKER_TASK_GROUP
             t.description = "Creates dockerfile in ${getDockerContextDir(project).path}"
             t.dependsOn(SoraTask.dockerCopyJar)
 
-            t.from dockerConfig.baseImage
+            // if baseImage is defined, then use it.
+            // otherwise, derive docker image from java version and use it
+            t.from dockerConfig.baseImage?: getBaseDockerImage(version)
             t.label([
                     "version"     : "${project.version}",
                     "built-date"  : "${new Date()}",
@@ -187,7 +191,7 @@ class DockerPlugin implements Plugin<Project> {
                     "built-gradle": "${project.gradle.gradleVersion}"
             ])
             t.instruction "MAINTAINER Bogdan Vaneev <bogdan@soramitsu.co.jp>"
-            t.instruction """ENV JAVA_OPTIONS="${getFlagsForCurrentJavaVersion(version)} \${JAVA_OPTIONS}"
+            t.instruction """ENV JAVA_OPTIONS="${getJavaOptions(version)}"
             """
 
             if (dockerConfig.files != null) {
@@ -228,7 +232,9 @@ class DockerPlugin implements Plugin<Project> {
         return new File(getDockerContextDir(project), path)
     }
 
-    static String getFlagsForCurrentJavaVersion(int version) {
+    static String
+
+    static String getJavaOptions(int version) {
         def flags = []
         flags << "-XshowSettings:vm"
         flags << "-XX:+PrintFlagsFinal"
@@ -238,20 +244,33 @@ class DockerPlugin implements Plugin<Project> {
                 flags << "-XX:+UnlockExperimentalVMOptions"
                 flags << "-XX:+UseCGroupMemoryLimitForHeap"
                 flags << "-XX:+UseContainerSupport"
-                flags << "-XX:MaxRAMFraction=4"
+                flags << "-XX:MaxRAMFraction=2"
                 break
             case 10:
             case 11:
-                // -XX:InitialRAMPercentage
-                // -XX:MaxRAMPercentage
-                // -XX:MinRAMPercentage
-                flags << "-XX:+UseContainerSupport"
             case 12:
             case 13:
+                flags << "-XX:MaxRAMPercentage=70"
+                flags << "-XX:MinRAMPercentage=50"
+                flags << "-XX:InitialRAMPercentage=50"
+                break
             default:
-                println(format("undefined java version: ${version}"))
+                throw new IllegalStateException(format("undefined/unsupported java version: ${version}"))
         }
 
         return flags.join(' ')
+    }
+
+    static String getBaseDockerImage(int javaVersion) {
+        switch (javaVersion) {
+            case 8:
+                return 'openjdk:8u212-jre-alpine'
+            case 11:
+                return 'openjdk:11-jdk-slim'
+            case 12:
+                return 'openjdk:12-jdk-oracle'
+            default:
+                return 'openjdk:8u212-jre-alpine' // default fallback tag
+        }
     }
 }
