@@ -42,7 +42,7 @@ soramitsu {
   projectGroup = 'sora' # define namespace for your project. default: null
   docker {
     # base docker image to be used (Dockerfile FROM instruction)
-    # default: openjdk:8u212-jre-alpine
+    # default: detected based on java version. fallback: openjdk:8-jre-alpine
     baseImage = 'openjdk:8u191-jre-alpine'
     # path to output JAR which is going to be dockerized
     jar = new File("build/libs/${project.name}-${project.version}.jar") 
