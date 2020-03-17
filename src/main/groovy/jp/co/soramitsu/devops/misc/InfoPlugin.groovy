@@ -85,7 +85,7 @@ class InfoPlugin implements Plugin<Project> {
     docker.projectName   = ${project.name}
     docker.ImageName     = ${parts}
     docker.tag           = ${tag}
-    docker.fullImageName = ${parts}:$tag
+    docker.fullImageName = ${parts}:${tag}
 """)
             }
         }
