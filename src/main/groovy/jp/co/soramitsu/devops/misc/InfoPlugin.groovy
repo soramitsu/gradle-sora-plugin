@@ -10,6 +10,8 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 
+import java.util.stream.Collectors
+
 class InfoPlugin implements Plugin<Project> {
 
     static final String INFO_GROUP_NAME = "info"
@@ -83,7 +85,7 @@ class InfoPlugin implements Plugin<Project> {
     docker.registry      = ${registry?.url}
     docker.projectGroup  = ${project.extensions.getByType(SoramitsuExtension)?.projectGroup}
     docker.projectName   = ${project.name}
-    docker.ImageName     = ${parts}
+    docker.imageName     = ${parts}
     docker.tag           = ${tag}
     docker.fullImageName = ${parts}:${tag}
 """)
