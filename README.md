@@ -20,6 +20,7 @@ https://plugins.gradle.org/plugin/jp.co.soramitsu.sora-plugin
 | printOsInfo      | printOsInfo                      | Prints information about OS and project                 |
 | printVersion     | printVersion                     | Prints project version based on git                     |
 | printConfig      | printConfig                      | Prints plugin configuration                             |
+| printDockerImage | printDockerImage                 | Prints Docker Image that will be used in dockerPush     |
 | dockerVersion    | dockerVersion                    | Prints current docker version                           |
 | dockerClean      | dockerClean                      | Cleans docker build context (build/docker)              |
 | dockerfileCreate | dockerClean + dockerfileCreate   | Generates Dockerfile in build context                   |

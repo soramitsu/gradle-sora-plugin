@@ -10,6 +10,8 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 
+import java.util.stream.Collectors
+
 class InfoPlugin implements Plugin<Project> {
 
     static final String INFO_GROUP_NAME = "info"
@@ -53,6 +55,39 @@ class InfoPlugin implements Plugin<Project> {
     soramitsu.docker.registry.username = ${registry?.username}
     soramitsu.docker.registry.password = ${registry?.password}
     soramitsu.docker.registry.email    = ${registry?.email}
+""")
+            }
+        }
+
+        project.tasks.register(SoraTask.printDockerImage).configure { Task t ->
+            t.group = INFO_GROUP_NAME
+            t.description = "Prints Docker Image that will be used in dockerPush"
+
+            def ext = project.extensions.getByType(SoramitsuExtension)
+            def dockerConfig = ext.extensions.getByType(DockerConfig)
+            def registry = dockerConfig.extensions.getByType(DockerRegistryConfig)
+
+            def parts = []
+            parts << registry?.url
+            parts << project.extensions.getByType(SoramitsuExtension)?.projectGroup
+            parts << project.name
+
+            parts = parts.stream()
+                    .filter({ p -> p != null })
+                    .collect(Collectors.joining("/"))
+            def tag = dockerConfig.tag
+            if (tag == null) {
+                tag = project.version
+            }
+
+            t.doLast {
+                println("""
+    docker.registry      = ${registry?.url}
+    docker.projectGroup  = ${project.extensions.getByType(SoramitsuExtension)?.projectGroup}
+    docker.projectName   = ${project.name}
+    docker.imageName     = ${parts}
+    docker.tag           = ${tag}
+    docker.fullImageName = ${parts}:${tag}
 """)
             }
         }
