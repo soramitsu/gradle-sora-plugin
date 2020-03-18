@@ -66,6 +66,11 @@ pluginBundle {
     tags = ['soramitsu', 'gradle']
 }
 
+test {
+    def projectsDir = "$project.projectDir/projects"
+    inputs.files fileTree(dir: projectsDir, exclude: '**/.gradle')
+}
+
 test.dependsOn(install)
 
 testlogger {
