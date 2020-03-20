@@ -24,6 +24,7 @@ class SoraTask {
     public static final String printOsInfo = "printOsInfo"
     public static final String printVersion = "printVersion"
     public static final String printConfig = "printConfig"
+    public static final String printDockerImage = "printDockerImage"
 
     /// coverage
     public static final String coverage = "coverage"
