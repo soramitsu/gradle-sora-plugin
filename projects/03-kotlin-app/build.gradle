@@ -7,10 +7,10 @@
 buildscript {
     repositories {
         mavenLocal()
-        jcenter()
+        mavenCentral()
         gradlePluginPortal()
         dependencies {
-            classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.21'
+            classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21'
             classpath 'jp.co.soramitsu:sora-plugin:+'
         }
     }
@@ -22,9 +22,9 @@ apply plugin: 'kotlin'
 
 println("Hello from 03-kotlin-app")
 
-repositories {
-    jcenter()
-}
+// Define the main class for the application
+mainClassName = 'example.App'
+group = 'jp.co.soramitsu'
 
 dependencies {
     // Use the Kotlin test library.
@@ -33,13 +33,9 @@ dependencies {
     // Use the Kotlin JUnit integration.
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
-
-// Define the main class for the application
-mainClassName = 'example.App'
-group = 'jp.co.soramitsu'
 
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
@@ -59,7 +55,7 @@ soramitsu {
 // define main class in the manifest
 jar {
     manifest {
-        attributes 'Implementation-Version': version,
+        attributes 'Implementation-Version': archiveVersion,
                 'Main-Class': 'example.App'
     }
 }

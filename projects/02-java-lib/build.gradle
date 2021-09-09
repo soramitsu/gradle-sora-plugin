@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         mavenLocal()
-        jcenter()
+        mavenCentral()
         gradlePluginPortal()
         dependencies { classpath 'jp.co.soramitsu:sora-plugin:+' }
     }
@@ -16,5 +16,5 @@ group = 'jp.co.soramitsu'
 println('Hello from 02-java-lib')
 
 dependencies {
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
 }

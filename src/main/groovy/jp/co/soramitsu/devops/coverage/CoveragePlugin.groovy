@@ -17,10 +17,12 @@ class CoveragePlugin implements Plugin<Project> {
     void apply(Project project) {
         project.pluginManager.apply(JacocoPlugin.class)
 
-        // remove old jacoco tasks
+        // disable old jacoco tasks
         project.afterEvaluate { Project p ->
-            p.tasks.removeIf({ Task t ->
-                return t.name.startsWith(JACOCO_PREFIX)
+            p.tasks.forEach({ Task t ->
+                if (t.name.startsWith(JACOCO_PREFIX)) {
+                    t.enabled = false
+                }
             })
         }
 
@@ -30,9 +32,9 @@ class CoveragePlugin implements Plugin<Project> {
             r.description = "Collect code coverage and produce html/xml reports"
 
             r.reports({ JacocoReportsContainer c ->
-                c.xml.enabled = true
-                c.html.enabled = true
-                c.csv.enabled = false
+                c.xml.required.set(true)
+                c.html.required.set(true)
+                c.csv.required.set(false)
             })
 
             r.executionData(project

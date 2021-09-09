@@ -3,7 +3,7 @@
 # gradle-devops-helper
 
 Min supported gradle 4.8
-Works with gradle 5+
+Works with gradle 7
 
 ## Usage
 
@@ -52,10 +52,10 @@ soramitsu {
     tag = "custom-tag"  
     # to enable dockerPush task, define registry credentials
     registry {
-      url = 'https://nexus.iroha.tech:19001' 
-      username = 'bogdan'
-      password = 'password'
-      email = 'bogdan@soramitsu.co.jp'  # optional
+      url = 'https://<host>:<port>' 
+      username = '<username>'
+      password = '<password>'
+      email = '<email>'  # optional
     }
     # files that will be added to the docker image (optional)
     # host fs: docker image fs
@@ -69,10 +69,10 @@ soramitsu {
 
 Docker registry data can be defined from env vars. Env vars ALWAYS override any value from build.gradle:
 ```bash
-DOCKER_REGISTRY_URL="https://nexus.iroha.tech:19001"
-DOCKER_REGISTRY_USERNAME="bogdan"
-DOCKER_REGISTRY_PASSWORD="password"
-DOCKER_REGISTRY_EMAIL="bogdan@soramitsu.co.jp"
+DOCKER_REGISTRY_URL="https://<host>:<port>"
+DOCKER_REGISTRY_USERNAME="<username>"
+DOCKER_REGISTRY_PASSWORD="<password>"
+DOCKER_REGISTRY_EMAIL="<email>"
 ```
 
 ## Features

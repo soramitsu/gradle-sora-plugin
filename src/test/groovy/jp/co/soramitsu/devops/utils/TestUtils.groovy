@@ -28,7 +28,7 @@ class TestUtils extends Specification {
         return result.task(":${task}").outcome in [TaskOutcome.UP_TO_DATE, TaskOutcome.SUCCESS, TaskOutcome.NO_SOURCE]
     }
 
-    static boolean taskNotRunned(BuildResult result, String task) {
+    static boolean taskNotRan(BuildResult result, String task) {
         return result.task(":${task}") == null
     }
 }

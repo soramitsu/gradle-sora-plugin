@@ -9,6 +9,7 @@ import org.apache.tools.ant.taskdefs.Java
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.plugins.ApplicationPlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.testing.Test
@@ -43,10 +44,9 @@ class SoraPlugin implements Plugin<Project> {
     }
 
     static void setupForJavaPlugin(Project project) {
-        project.tasks.named(SoraTask.build).configure { t ->
+        project.tasks.named(SoraTask.build).configure { Task build ->
             // build should not depend on check/test
-            t.dependsOn.remove(SoraTask.check)
-            t.dependsOn.remove(SoraTask.test)
+            removeTasksFromDependsOn(build, SoraTask.check, SoraTask.test)
         }
 
         project.tasks.withType(Test.class).configureEach { t ->
@@ -106,9 +106,25 @@ class SoraPlugin implements Plugin<Project> {
                 project.repositories.maven {
                     url 'https://plugins.gradle.org/m2/'
                 },
-                project.repositories.jcenter(),
                 project.repositories.gradlePluginPortal(),
                 project.repositories.mavenCentral()
         ])
+    }
+
+    private static void removeTasksFromDependsOn(Task task, String... tasksToRemove) {
+        // Since Gradle 7 we can't just remove task from dependsOn
+
+        var allDependsOn = task.dependsOn.collect()
+        task.dependsOn.clear()
+
+        var filteredDependsOn = allDependsOn.findAll { dTask ->
+            for (String toRemove in tasksToRemove) {
+                if (dTask == toRemove) {
+                    return false
+                }
+            }
+            return true
+        }
+        task.dependsOn.addAll(filteredDependsOn)
     }
 }

@@ -106,7 +106,7 @@ class DockerPlugin implements Plugin<Project> {
                     SoraTask.dockerBuild,
             ])
 
-            t.imageName.set(tag)
+            t.images.set([tag])
         }
     }
 
@@ -123,7 +123,7 @@ class DockerPlugin implements Plugin<Project> {
                     SoraTask.dockerfileCreate
             ])
 
-            t.tags.set([tag])
+            t.images.set([tag])
 
             t.inputDir.set getDockerContextDir(project)
 
@@ -190,7 +190,7 @@ class DockerPlugin implements Plugin<Project> {
                     "built-jdk"   : "${System.getProperty('java.version')}",
                     "built-gradle": "${project.gradle.gradleVersion}"
             ])
-            t.instruction "MAINTAINER Bogdan Vaneev <bogdan@soramitsu.co.jp>"
+            t.instruction "MAINTAINER Soramitsu"
             t.instruction """ENV JAVA_OPTIONS="${getJavaOptions(version)}"
             """
 
@@ -232,8 +232,6 @@ class DockerPlugin implements Plugin<Project> {
         return new File(getDockerContextDir(project), path)
     }
 
-    static String
-
     static String getJavaOptions(int version) {
         def flags = []
         flags << "-XshowSettings:vm"
@@ -250,6 +248,9 @@ class DockerPlugin implements Plugin<Project> {
             case 11:
             case 12:
             case 13:
+            case 14:
+            case 15:
+            case 16:
                 flags << "-XX:MaxRAMPercentage=70"
                 flags << "-XX:MinRAMPercentage=50"
                 flags << "-XX:InitialRAMPercentage=50"
