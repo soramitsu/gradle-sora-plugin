@@ -35,7 +35,7 @@ class TasksTest extends Specification {
         hasTask(result, SoraTask.dockerVersion)
 
 //        and: "has no this tasks"
-//        !hasTask(result, 'jacocoTestReport')  TODO
+//        !hasTask(result, 'jacocoTestReport')  TODO: RLN-46
 //        !hasTask(result, 'jacocoTestCoverageVerification')
 
         where:
@@ -62,7 +62,7 @@ class TasksTest extends Specification {
 
 
         and: "has no this tasks"
-//        !hasTask(result, 'jacocoTestReport')  TODO
+//        !hasTask(result, 'jacocoTestReport')  TODO: RLN-46
 //        !hasTask(result, 'jacocoTestCoverageVerification')
         !hasTask(result, SoraTask.dockerCopyJar)
         !hasTask(result, SoraTask.dockerCopyFiles)
