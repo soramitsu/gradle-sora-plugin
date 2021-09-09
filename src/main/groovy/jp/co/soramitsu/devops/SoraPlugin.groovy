@@ -117,14 +117,7 @@ class SoraPlugin implements Plugin<Project> {
         var allDependsOn = task.dependsOn.collect()
         task.dependsOn.clear()
 
-        var filteredDependsOn = allDependsOn.findAll { dTask ->
-            for (String toRemove in tasksToRemove) {
-                if (dTask == toRemove) {
-                    return false
-                }
-            }
-            return true
-        }
+        var filteredDependsOn = allDependsOn.findAll { dTask -> !tasksToRemove.contains(dTask)}
         task.dependsOn.addAll(filteredDependsOn)
     }
 }
