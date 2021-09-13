@@ -15,6 +15,8 @@ apply plugin: 'jp.co.soramitsu.sora-plugin'
 apply plugin: 'application'
 apply plugin: 'java'
 
+version System.getenv('PLUGIN_VERSION') ?: "0.4.0"
+
 println("Hello from 01-java-app")
 println("Name is")
 println project.name
