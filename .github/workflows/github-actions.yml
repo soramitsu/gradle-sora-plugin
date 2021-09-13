@@ -22,7 +22,7 @@ jobs:
         run: |
           ./gradlew --daemon
           ./gradlew build -x test
-          ./gradlew test --info
+          ./gradlew test
       - name: Run Deployment Script
         run: ./publish.sh
         shell: bash
