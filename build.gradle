@@ -13,12 +13,7 @@ plugins {
 
 group 'jp.co.soramitsu'
 def pluginId = "${group}.sora-plugin"
-version System.getenv('PLUGIN_VERSION') ?: "0.4.0"
-
-println("Name is")
-println project.name
-println("Version is")
-println project.version
+version System.getenv('TAG_NAME') ?: "0.4.0"
 
 repositories {
     mavenCentral()

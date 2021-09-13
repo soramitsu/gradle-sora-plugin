@@ -16,10 +16,6 @@ apply plugin: 'application'
 apply plugin: 'java'
 
 println("Hello from 01-java-app")
-println("Name is")
-println project.name
-println("Version is")
-println project.version
 
 dependencies {
     testImplementation 'junit:junit:4.13.2'
