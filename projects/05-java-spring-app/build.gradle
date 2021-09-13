@@ -15,12 +15,11 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'java'
 
-
 println("Hello from 05-java-spring-app")
-
 
 group = 'jp.co.soramitsu'
 mainClassName = 'example.javaspringapp.Application'
+project.version = 'test'
 
 repositories {
 	mavenCentral()

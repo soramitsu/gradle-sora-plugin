@@ -17,12 +17,12 @@ jobs:
       - name: make scripts executable
         run: |
           chmod +x gradlew
-          chmod +x publish.sh
       - name: Run Gradle Wrapper Daemon, Build, then Test
         run: |
           ./gradlew --daemon
           ./gradlew build -x test
+          ./gradlew publishToMavenLocal
           ./gradlew test
       - name: Run Deployment Script
-        run: ./publish.sh
+        run: ./gradlew publishPlugins
         shell: bash
