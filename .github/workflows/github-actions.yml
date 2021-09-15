@@ -1,5 +1,5 @@
 name: test-deploy-gradle-sora-plugin
-on: [push, pull_request, create]
+on: [pull_request, create]
 jobs:
   test-deploy-plugin:
     runs-on: ubuntu-latest
@@ -17,7 +17,7 @@ jobs:
       - name: Check for new tag created # and set TAG_NAME
         if: ${{ github.event_name == 'create' && github.event.ref_type == 'tag' }}
         run: |
-          echo "Tag is ${{ github.ref }}"
+          echo "New version tag is ${{ github.ref }}"
           echo "plugin_tag=${{ github.ref }}" >> $GITHUB_ENV
       - name: Make scripts executable
         run: |
@@ -26,7 +26,7 @@ jobs:
         env:
           TAG_NAME: ${{ env.plugin_tag }}
         run: |
-          echo "Tag is $TAG_NAME"
+          echo "New version tag is $TAG_NAME"
           ./gradlew --daemon
           ./gradlew build -x test
           ./gradlew publishToMavenLocal
