@@ -12,7 +12,7 @@ apply plugin: 'java'
 // this project does not have 'application' plugin, so docker tasks are not available
 
 group = 'jp.co.soramitsu'
-// project.version = 'test'
+project.version = 'test'
 
 println('Hello from 02-java-lib')
 

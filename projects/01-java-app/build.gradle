@@ -24,7 +24,7 @@ dependencies {
 // Define the main class for the application
 group = 'jp.co.soramitsu'
 mainClassName = 'example.App'
-// project.version = 'test'
+project.version = 'test'
 
 soramitsu {
     docker {
