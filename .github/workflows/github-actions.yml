@@ -21,12 +21,12 @@ jobs:
       - name: Make scripts executable
         run: |
           chmod +x gradlew
+          chmod +x publish.sh
       - name: Run Gradle Wrapper Daemon, Build, then Test
-        env:
-          TAG_NAME: ${{ env.plugin_tag }}
+        #env:
+        #  TAG_NAME: ${{ env.plugin_tag }}
         run: |
-          echo "New version tag is ${TAG_NAME}"
-          export 
+          export TAG_NAME=${{ env.plugin_tag }} 
           ./gradlew --daemon
           ./gradlew build -x test
           ./gradlew publishToMavenLocal
@@ -34,5 +34,5 @@ jobs:
       - name: Run Publish # if new tag created
         if: ${{ github.event_name == 'create' && github.event.ref_type == 'tag' }}
         run: |
-          sh ./publish.sh
+          ./publish.sh
 
