@@ -25,7 +25,7 @@ println("Hello from 03-kotlin-app")
 // Define the main class for the application
 mainClassName = 'example.App'
 group = 'jp.co.soramitsu'
-project.version = 'test'
+// project.version = 'test'
 
 dependencies {
     // Use the Kotlin test library.

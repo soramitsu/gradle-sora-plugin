@@ -19,7 +19,7 @@ println("Hello from 05-java-spring-app")
 
 group = 'jp.co.soramitsu'
 mainClassName = 'example.javaspringapp.Application'
-project.version = 'test'
+// project.version = 'test'
 
 repositories {
 	mavenCentral()
