@@ -34,5 +34,5 @@ jobs:
       - name: Run Publish # if new tag created
         if: ${{ github.event_name == 'create' && github.event.ref_type == 'tag' }}
         run: |
-          ./publish.sh
+          ./gradlew publishPlugins
 
