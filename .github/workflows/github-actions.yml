@@ -21,7 +21,6 @@ jobs:
       - name: Make scripts executable
         run: |
           chmod +x gradlew
-          chmod +x publish.sh
       - name: Run Gradle Wrapper Daemon, Build, then Test
         #env:
         #  TAG_NAME: ${{ env.plugin_tag }}
