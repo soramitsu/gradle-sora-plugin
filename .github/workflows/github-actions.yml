@@ -22,8 +22,6 @@ jobs:
         run: |
           chmod +x gradlew
       - name: Run Gradle Wrapper Daemon, Build, then Test
-        #env:
-        #  TAG_NAME: ${{ env.plugin_tag }}
         run: |
           export TAG_NAME=${{ env.plugin_tag }} 
           ./gradlew --daemon
@@ -33,5 +31,6 @@ jobs:
       - name: Run Publish # if new tag created
         if: ${{ github.event_name == 'create' && github.event.ref_type == 'tag' }}
         run: |
+          export TAG_NAME=${{ env.plugin_tag }}
           ./gradlew publishPlugins
 
