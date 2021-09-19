@@ -17,8 +17,8 @@ jobs:
       - name: Check for new tag created # and set TAG_NAME
         if: ${{ github.event_name == 'create' && github.event.ref_type == 'tag' }}
         run: |
-          echo "New version tag is ${{ github.ref }}"
-          echo "plugin_tag=${{ github.ref }}" >> $GITHUB_ENV
+          echo "New version tag is ${GITHUB_REF/refs\/tags\//}"
+          echo "plugin_tag=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
       - name: Make scripts executable
         run: |
           chmod +x gradlew
@@ -31,7 +31,7 @@ jobs:
           ./gradlew build -x test
           ./gradlew publishToMavenLocal
           ./gradlew test
-      - name: Run Deployment # if new tag created
+      - name: Run Publish # if new tag created
         if: ${{ github.event_name == 'create' && github.event.ref_type == 'tag' }}
         run: ./gradlew publishPlugins
 
