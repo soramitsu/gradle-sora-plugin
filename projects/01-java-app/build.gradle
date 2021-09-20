@@ -6,7 +6,7 @@
 buildscript {
     repositories {
         mavenLocal()
-        jcenter()
+        mavenCentral()
         gradlePluginPortal()
         dependencies { classpath 'jp.co.soramitsu:sora-plugin:+' }
     }
@@ -17,17 +17,14 @@ apply plugin: 'java'
 
 println("Hello from 01-java-app")
 
-repositories {
-    jcenter()
-}
-
 dependencies {
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 // Define the main class for the application
 group = 'jp.co.soramitsu'
 mainClassName = 'example.App'
+project.version = 'test'
 
 soramitsu {
     docker {
@@ -43,7 +40,7 @@ soramitsu {
 
 jar {
     manifest {
-        attributes 'Implementation-Version': version,
+        attributes 'Implementation-Version': archiveVersion,
                 'Main-Class': 'example.App'
     }
 }

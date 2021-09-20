@@ -2,16 +2,16 @@ package jp.co.soramitsu.devops.utils
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
+import spock.lang.TempDir
 
+import java.nio.file.Path
 
 class BaseIntegrationTest extends Specification {
-    private static final String defaultGradleVersion = '4.10'
+    private static final String defaultGradleVersion = '7.1.1'
 
-    @Rule
-    final TemporaryFolder testProjectDir = new TemporaryFolder()
+    @TempDir
+    Path testProjectDir
     protected File settingsFile
     protected File buildFile
 
@@ -27,11 +27,9 @@ class BaseIntegrationTest extends Specification {
     BuildResult runTask(String taskName, String gradleVersion) {
         return GradleRunner.create()
                 .withGradleVersion(gradleVersion)
-                .withProjectDir(testProjectDir.root)
+                .withProjectDir(testProjectDir.root.toFile())
                 .withArguments(taskName)
                 .withPluginClasspath()
                 .build()
     }
-
-
 }

@@ -5,7 +5,7 @@ import jp.co.soramitsu.devops.utils.TestUtils
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static jp.co.soramitsu.devops.utils.TestUtils.taskNotRunned
+import static jp.co.soramitsu.devops.utils.TestUtils.taskNotRan
 import static jp.co.soramitsu.devops.utils.TestUtils.taskSucceeded
 
 class JavaPluginTasksTest extends Specification {
@@ -21,20 +21,20 @@ class JavaPluginTasksTest extends Specification {
         println(result.output)
 
         then: "no test/check is executed"
-        result.output.contains(projectName)
+        result.output.contains(projectName as CharSequence)
         taskSucceeded(result, "build")
-        taskNotRunned(result, "test")
-        taskNotRunned(result, "check")
+        taskNotRan(result, "test")
+        taskNotRan(result, "check")
 
         when: "execute test task"
         result = project.runTask("test")
         println(result.output)
 
         then: "no check is executed"
-        result.output.contains(projectName)
+        result.output.contains(projectName as CharSequence)
         taskSucceeded(result, "build")
         taskSucceeded(result, "test")
-        taskNotRunned(result, "check")
+        taskNotRan(result, "check")
 
         when: "execute check task"
         result = project.runTask("check")

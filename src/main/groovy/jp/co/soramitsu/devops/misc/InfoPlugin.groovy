@@ -61,7 +61,7 @@ class InfoPlugin implements Plugin<Project> {
 
         project.tasks.register(SoraTask.printDockerImage).configure { Task t ->
             t.group = INFO_GROUP_NAME
-            t.description = "Prints Docker Image that will be used in dockerPush"
+            t.description = "Prints Docker Image that will be used in docker push"
 
             def ext = project.extensions.getByType(SoramitsuExtension)
             def dockerConfig = ext.extensions.getByType(DockerConfig)

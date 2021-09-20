@@ -6,14 +6,12 @@ import org.gradle.testkit.runner.GradleRunner
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-import java.util.function.BiConsumer
-
 
 class GradleProjectExecutor {
 
     Logger logger = LoggerFactory.getLogger(GradleProjectExecutor.class)
 
-    private static final String defaultGradleVersion = '4.10'
+    private static final String defaultGradleVersion = '7.1.1'
 
     File projectDir
     File buildFile
@@ -74,6 +72,4 @@ class GradleProjectExecutor {
                 .forwardOutput()
                 .build()
     }
-
-
 }

@@ -2,23 +2,21 @@ plugins {
 //    id 'nebula.lint' version '9.3.2'
     id "com.palantir.idea-test-fix" version "0.1.0"
     id 'groovy'
-    id 'maven'
     id 'maven-publish'
     id 'idea'
     id 'java'
-    id "com.gradle.plugin-publish" version "0.10.1"
+    id "com.gradle.plugin-publish" version "0.15.0"
     id "java-gradle-plugin"
     id 'com.palantir.git-version' version '0.12.0-rc2'
-    id 'com.adarshr.test-logger' version '1.6.0'
+    id 'com.adarshr.test-logger' version '3.0.0'
 }
 
 group 'jp.co.soramitsu'
 def pluginId = "${group}.sora-plugin"
-version System.getenv('PLUGIN_VERSION') ?: "0.1.5"
+version System.getenv('TAG_NAME') ?: "0.4.0"
 
 repositories {
     mavenCentral()
-    jcenter()
     maven {
         url "https://plugins.gradle.org/m2/"
     }
@@ -29,11 +27,10 @@ dependencies {
     implementation localGroovy()
     testImplementation gradleTestKit()
 
-    implementation 'com.bmuschko:gradle-docker-plugin:4.6.0'
+    implementation 'com.bmuschko:gradle-docker-plugin:6.7.0'
     implementation 'gradle.plugin.com.palantir.gradle.gitversion:gradle-git-version:0.12.0-rc2'
 
-
-    testImplementation('org.spockframework:spock-core:1.1-groovy-2.4') {
+    testImplementation('org.spockframework:spock-core:2.0-groovy-3.0') {
         exclude module: 'groovy-all'
     }
 }
@@ -41,7 +38,7 @@ dependencies {
 jar {
     manifest {
         attributes 'Implementation-Title': 'Gradle Sora plugin',
-                'Implementation-Version': version,
+                'Implementation-Version': archiveVersion,
                 'Built-By': System.getProperty('user.name'),
                 'Built-Date': new Date(),
                 'Built-JDK': System.getProperty('java.version'),
@@ -67,11 +64,12 @@ pluginBundle {
 }
 
 test {
+    useJUnitPlatform()
     def projectsDir = "$project.projectDir/projects"
     inputs.files fileTree(dir: projectsDir, exclude: '**/.gradle')
 }
 
-test.dependsOn(install)
+test.dependsOn(publishToMavenLocal)
 
 testlogger {
     theme 'standard'
