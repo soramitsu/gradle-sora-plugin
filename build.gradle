@@ -64,11 +64,6 @@ pluginBundle {
     tags = ['soramitsu', 'gradle']
 }
 
-// TODO: remove
-//tasks.register("enabledTasks") { task ->
-//    println(tasks.stream().filter { it.enabled && it.name != task.name }.map { it.name }.toList())
-//}
-
 test {
     useJUnitPlatform()
     def projectsDir = "$project.projectDir/projects"
