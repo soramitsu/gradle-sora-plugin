@@ -33,7 +33,7 @@ class DockerTasksTest extends Specification {
         def prjdir = new File("./projects/${projectName}")
         def build = new File(prjdir, 'build')
         def docker = new File(build, 'docker')
-        def project = new GradleProjectExecutor(projectName)
+        def project = new GradleProjectExecutor(prjdir)
 
         when:
         result = project.runTask(SoraTask.dockerCopyFiles)
