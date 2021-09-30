@@ -14,7 +14,7 @@ class JavaPluginTasksTest extends Specification {
     def "[#projectName] only correct tasks runned"() {
         given: "a project"
         def result
-        def project = new GradleProjectExecutor(new File("./projects/${projectName}"))
+        def project = new GradleProjectExecutor(projectName)
 
         when: "execute build task"
         result = project.runTask("build")

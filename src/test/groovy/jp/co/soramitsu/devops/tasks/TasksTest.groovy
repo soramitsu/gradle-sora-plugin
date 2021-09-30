@@ -13,7 +13,7 @@ class TasksTest extends Specification {
     def "[#projectName] app has required gradle tasks"() {
         given: "gradle project"
         def result
-        def project = new GradleProjectExecutor(new File("./projects/${projectName}"))
+        def project = new GradleProjectExecutor(projectName)
 
         when: "execute 'gradle tasks'"
         result = project.runTask("tasks")
@@ -46,10 +46,10 @@ class TasksTest extends Specification {
     def "[#projectName] lib has required gradle tasks"() {
         given: "gradle project"
         def result
-        def project = new GradleProjectExecutor(new File("./projects/${projectName}"))
+        def project = new GradleProjectExecutor(projectName)
 
         when: "execute 'gradle tasks'"
-        result = project.runTask("tasks")
+        result = project.runTask("enabledTasks")
         println(result.output)
 
         then: "has this tasks"
@@ -59,7 +59,6 @@ class TasksTest extends Specification {
         hasTask(result, SoraTask.coverage)
         hasTask(result, SoraTask.printVersion)
         hasTask(result, SoraTask.printOsInfo)
-
 
         and: "has no this tasks"
 //        !hasTask(result, 'jacocoTestReport')  TODO: RLN-46

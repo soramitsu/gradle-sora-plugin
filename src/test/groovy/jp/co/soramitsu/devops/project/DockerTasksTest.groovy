@@ -14,7 +14,7 @@ class DockerTasksTest extends Specification {
     def "[#projectName] dockerBuild succeeds"() {
         given:
         def result
-        def project = new GradleProjectExecutor(new File("./projects/${projectName}"))
+        def project = new GradleProjectExecutor(projectName)
 
         when:
         result = project.runTask(SoraTask.dockerBuild)
@@ -33,7 +33,7 @@ class DockerTasksTest extends Specification {
         def prjdir = new File("./projects/${projectName}")
         def build = new File(prjdir, 'build')
         def docker = new File(build, 'docker')
-        def project = new GradleProjectExecutor(prjdir)
+        def project = new GradleProjectExecutor(projectName)
 
         when:
         result = project.runTask(SoraTask.dockerCopyFiles)

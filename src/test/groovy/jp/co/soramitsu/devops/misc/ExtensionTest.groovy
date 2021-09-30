@@ -65,7 +65,7 @@ class ExtensionTest extends Specification {
         def td = new File("build/_test")
         td.mkdirs()
 
-        def project = new GradleProjectExecutor(td)
+        def project = new GradleProjectExecutor(td)  // TODO: доп конструктор
         project.clearProject()
 
         def projectGroup = "ext-projectGroup"
