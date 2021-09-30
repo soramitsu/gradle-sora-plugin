@@ -14,7 +14,7 @@ class DockerTasksTest extends Specification {
     def "[#projectName] dockerBuild succeeds"() {
         given:
         def result
-        def project = new GradleProjectExecutor(new File("./projects/${projectName}"))
+        def project = new GradleProjectExecutor(projectName)
 
         when:
         result = project.runTask(SoraTask.dockerBuild)

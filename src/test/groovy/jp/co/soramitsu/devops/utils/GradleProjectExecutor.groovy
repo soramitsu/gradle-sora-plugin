@@ -1,5 +1,6 @@
 package jp.co.soramitsu.devops.utils
 
+import org.apache.commons.io.FileUtils
 import org.gradle.internal.impldep.org.apache.commons.lang.RandomStringUtils
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
@@ -14,26 +15,27 @@ class GradleProjectExecutor {
     private static final String defaultGradleVersion = '7.1.1'
 
     File projectDir
-    File buildFile
-    File settingsFile
+    protected File buildFile
+    protected File settingsFile
 
     GradleProjectExecutor(File dir) {
+        checkDir(dir)
         this.projectDir = dir
-
-        if (projectDir == null) {
-            throw new IllegalStateException("specify projectDir")
-        }
-
-        if (!projectDir.exists()) {
-            throw new IllegalArgumentException("Project dir does not exist: ${projectDir.canonicalPath}")
-        }
-
-        if (!projectDir.isDirectory()) {
-            throw new IllegalArgumentException("Project dir is not a directory: ${projectDir.canonicalPath}")
-        }
 
         settingsFile = new File(projectDir, 'settings.gradle')
         buildFile = new File(projectDir, 'build.gradle')
+    }
+
+    GradleProjectExecutor(String projectName) {
+        var soraPluginDir = File.createTempDir()
+        FileUtils.copyDirectory(new File("./"), soraPluginDir)
+        projectDir = new File("${soraPluginDir.toString()}/projects/${projectName}")
+
+        checkDir(projectDir)
+
+        settingsFile = new File(projectDir, 'settings.gradle')
+        buildFile = new File(projectDir, 'build.gradle')
+        addTaskToBuildFile()
     }
 
     void clearProject() {
@@ -71,5 +73,22 @@ class GradleProjectExecutor {
                 .withPluginClasspath()
                 .forwardOutput()
                 .build()
+    }
+
+    private checkDir(File dir) {
+        if (dir == null) {
+            throw new IllegalStateException("specify projectDir")
+        }
+        if (!dir.exists()) {
+            throw new IllegalArgumentException("Project dir does not exist: ${projectDir.canonicalPath}")
+        }
+        if (!dir.isDirectory()) {
+            throw new IllegalArgumentException("Project dir is not a directory: ${projectDir.canonicalPath}")
+        }
+    }
+
+    private addTaskToBuildFile() {
+        var taskList = "\ntasks.register(\"taskList\") { task -> doLast { println(tasks.stream().filter { it.name != task.name }.map { it.name }.toList()) } }"
+        buildFile.append(taskList)
     }
 }

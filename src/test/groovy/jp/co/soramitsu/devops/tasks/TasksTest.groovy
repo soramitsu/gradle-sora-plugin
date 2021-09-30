@@ -13,10 +13,10 @@ class TasksTest extends Specification {
     def "[#projectName] app has required gradle tasks"() {
         given: "gradle project"
         def result
-        def project = new GradleProjectExecutor(new File("./projects/${projectName}"))
+        def project = new GradleProjectExecutor(projectName)
 
         when: "execute 'gradle tasks'"
-        result = project.runTask("tasks")
+        result = project.runTask("taskList")
         println(result.output)
 
         then: "has this tasks"
@@ -34,9 +34,9 @@ class TasksTest extends Specification {
         hasTask(result, SoraTask.dockerPush)
         hasTask(result, SoraTask.dockerVersion)
 
-//        and: "has no this tasks"
-//        !hasTask(result, 'jacocoTestReport')  TODO: RLN-46
-//        !hasTask(result, 'jacocoTestCoverageVerification')
+        and: "has disabled tasks"
+        isTaskDisabled(project, 'jacocoTestReport')
+        isTaskDisabled(project, 'jacocoTestCoverageVerification')
 
         where:
         projectName << TestUtils.apps
@@ -46,10 +46,10 @@ class TasksTest extends Specification {
     def "[#projectName] lib has required gradle tasks"() {
         given: "gradle project"
         def result
-        def project = new GradleProjectExecutor(new File("./projects/${projectName}"))
+        def project = new GradleProjectExecutor(projectName)
 
         when: "execute 'gradle tasks'"
-        result = project.runTask("tasks")
+        result = project.runTask("taskList")
         println(result.output)
 
         then: "has this tasks"
@@ -60,10 +60,7 @@ class TasksTest extends Specification {
         hasTask(result, SoraTask.printVersion)
         hasTask(result, SoraTask.printOsInfo)
 
-
         and: "has no this tasks"
-//        !hasTask(result, 'jacocoTestReport')  TODO: RLN-46
-//        !hasTask(result, 'jacocoTestCoverageVerification')
         !hasTask(result, SoraTask.dockerCopyJar)
         !hasTask(result, SoraTask.dockerCopyFiles)
         !hasTask(result, SoraTask.dockerfileCreate)
@@ -72,11 +69,20 @@ class TasksTest extends Specification {
         !hasTask(result, SoraTask.dockerPush)
         !hasTask(result, SoraTask.dockerVersion)
 
+        and: "has disabled tasks"
+        isTaskDisabled(project, 'jacocoTestReport')
+        isTaskDisabled(project, 'jacocoTestCoverageVerification')
+
         where:
         projectName << TestUtils.libs
     }
 
-    boolean hasTask(BuildResult result, String taskName) {
+    static boolean hasTask(BuildResult result, final String taskName) {
         return result.output.contains(taskName)
+    }
+
+    static boolean isTaskDisabled(GradleProjectExecutor project, final String name) {
+        var result = project.runTask(name)
+        return result.output.contains("Task :${name} SKIPPED")
     }
 }
