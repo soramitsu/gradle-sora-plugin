@@ -209,7 +209,7 @@ class DockerPlugin implements Plugin<Project> {
             // setup tiny https://github.com/krallin/tini
             t.instruction """ENV TINI_VERSION="v0.19.0"
             """ // TODO use variable here
-            t.addFile "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini", "/tini"
+            t.addFile "https://github.com/krallin/tini/releases/download/\${TINI_VERSION}/tini", "/tini"
             t.runCommand "chmod +x /tini"
             t.entryPoint "/tini", "--"
 
