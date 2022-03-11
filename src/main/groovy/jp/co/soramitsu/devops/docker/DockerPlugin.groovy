@@ -278,6 +278,8 @@ class DockerPlugin implements Plugin<Project> {
             return 'openjdk:12-jdk-oracle'
         } else if (javaVersion == 13) {
             return 'openjdk:13'
+        } else if (javaVersion == 17) {
+            return 'openjdk:17-jdk-slim'
         } else {
             // default fallback version
             return 'openjdk:8-jre-alpine'
