@@ -188,9 +188,9 @@ class DockerPlugin implements Plugin<Project> {
                     "built-date"  : "${new Date()}",
                     "built-by"    : "${System.getProperty('user.name')}",
                     "built-jdk"   : "${System.getProperty('java.version')}",
-                    "built-gradle": "${project.gradle.gradleVersion}"
+                    "built-gradle": "${project.gradle.gradleVersion}",
+                    "MAINTAINER"  : "admin@soramitsu.co.jp"
             ])
-            t.instruction "MAINTAINER Soramitsu"
             t.instruction """ENV JAVA_OPTIONS="${getJavaOptions(version)}"
             """
 
@@ -205,6 +205,15 @@ class DockerPlugin implements Plugin<Project> {
 
             // copy jar
             t.copyFile jar.name, "/${jar.name}"
+
+            // setup tiny https://github.com/krallin/tini
+            t.addFile "https://github.com/krallin/tini/releases/download/v0.19.0/tini", "/tini"
+            t.runCommand "chmod +x /tini"
+            t.entryPoint "/tini", "--"
+
+            // add user
+            t.runCommand "groupadd -r appuser && useradd -r -g appuser appuser"
+            t.instruction "USER appuser"
 
             // if null, then use empty string
             def args = dockerConfig.args ?: ""
@@ -265,7 +274,7 @@ class DockerPlugin implements Plugin<Project> {
 
     static String getBaseDockerImage(int javaVersion) {
         if (javaVersion == 11) {
-            return 'openjdk:11-jdk-slim'
+            return 'openjdk:11-jre-slim'
         } else if (javaVersion == 12) {
             return 'openjdk:12-jdk-oracle'
         } else if (javaVersion == 13) {
