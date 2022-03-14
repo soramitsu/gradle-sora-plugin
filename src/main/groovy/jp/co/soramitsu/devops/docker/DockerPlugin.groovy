@@ -260,6 +260,7 @@ class DockerPlugin implements Plugin<Project> {
             case 14:
             case 15:
             case 16:
+            case 17:
                 flags << "-XX:MaxRAMPercentage=70"
                 flags << "-XX:MinRAMPercentage=50"
                 flags << "-XX:InitialRAMPercentage=50"
