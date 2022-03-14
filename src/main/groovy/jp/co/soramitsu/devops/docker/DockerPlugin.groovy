@@ -189,7 +189,7 @@ class DockerPlugin implements Plugin<Project> {
                     "built-by"    : "${System.getProperty('user.name')}",
                     "built-jdk"   : "${System.getProperty('java.version')}",
                     "built-gradle": "${project.gradle.gradleVersion}",
-                    "MAINTAINER"  : "Soramitsu"
+                    "MAINTAINER"  : "admin@soramitsu.co.jp"
             ])
             t.instruction """ENV JAVA_OPTIONS="${getJavaOptions(version)}"
             """
