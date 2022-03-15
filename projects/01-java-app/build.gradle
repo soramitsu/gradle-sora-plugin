@@ -28,7 +28,7 @@ project.version = 'test'
 
 soramitsu {
     docker {
-        baseImage = 'openjdk:8u191-jre-alpine'
+        baseImage = 'openjdk:8-jre-alpine'
         jar = new File("build/libs/${project.name}-${project.version}.jar")
         files = [
                 "build.gradle":"/build.gradle",
