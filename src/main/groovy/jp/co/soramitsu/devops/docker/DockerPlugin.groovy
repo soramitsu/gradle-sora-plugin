@@ -14,6 +14,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
+import org.gradle.api.tasks.Exec
 
 import java.util.stream.Collectors
 
@@ -45,13 +46,16 @@ class DockerPlugin implements Plugin<Project> {
             setupDockerCopyJarTask(p, jar)
             setupDockerCopyFilesTask(p, dockerConfig)
             setupDockerBuildTask(p, tag)
+            setupDockerBuildArm64(p, registry, tag)
             setupDockerPushTask(p, registry, tag)
         }
     }
 
-    static String getDefaultTag(Project project,
-                                DockerRegistryConfig registry,
-                                DockerConfig dockerConfig) {
+    static String getDefaultTag(
+            Project project,
+            DockerRegistryConfig registry,
+            DockerConfig dockerConfig
+    ) {
         def parts = []
         parts << registry?.url
         parts << project.extensions.getByType(SoramitsuExtension)?.projectGroup
@@ -101,12 +105,19 @@ class DockerPlugin implements Plugin<Project> {
         project.tasks.register(SoraTask.dockerPush, DockerPushImage).configure { DockerPushImage t ->
             t.group = DOCKER_TASK_GROUP
             t.description = "Push docker image to ${registry.url}"
-
-            t.dependsOn([
-                    SoraTask.dockerBuild,
-            ])
-
+            t.dependsOn([SoraTask.dockerBuild])
             t.images.set([tag])
+        }
+    }
+
+    static void setupDockerBuildArm64(Project project, DockerRegistryConfig registry, String tag) {
+        project.tasks.register(SoraTask.dockerBuildArm64, Exec).configure { Exec t ->
+            t.group = DOCKER_TASK_GROUP
+            t.workingDir = getDockerContextDir(project)
+            t.description = "Build docker image for arm64 with tag ${tag}"
+            t.dependsOn([SoraTask.dockerfileCreate])
+            t.executable = 'docker'
+            t.args = ['build', '-t', tag, '.']
         }
     }
 

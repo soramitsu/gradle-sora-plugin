@@ -6,8 +6,7 @@ import groovy.transform.CompileStatic
 class Sanitize {
 
     static String tag(String t) {
-        t
-                ?.replaceAll("http://", "")
+        t?.replaceAll("http://", "")
                 ?.replaceAll("https://", "")
                 ?.replaceAll("//", "/")
     }
