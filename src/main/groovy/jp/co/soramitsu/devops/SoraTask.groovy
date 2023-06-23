@@ -19,7 +19,6 @@ class SoraTask {
     public static final String dockerBuild = "dockerBuild"
     public static final String dockerClean = "dockerClean"
     public static final String dockerVersion = "dockerVersion"
-    public static final String dockerBuildArm64 = "dockerBuildArm64"
 
     /// misc
     public static final String printOsInfo = "printOsInfo"
