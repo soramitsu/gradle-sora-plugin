@@ -45,17 +45,17 @@ class InfoPlugin implements Plugin<Project> {
             def registry = docker.extensions.getByType(DockerRegistryConfig)
             t.doLast {
                 println("""
-    soramitsu                          = ${ext}
-    soramitsu.projectGroup             = ${ext?.projectGroup}
-    soramitsu.docker                   = ${docker}
-    soramitsu.docker.jar               = ${docker?.jar}
-    soramitsu.docker.tag               = ${docker?.tag}
-    soramitsu.docker.registry          = ${registry}
-    soramitsu.docker.registry.url      = ${registry?.url}
-    soramitsu.docker.registry.username = ${registry?.username}
-    soramitsu.docker.registry.password = ${registry?.password}
-    soramitsu.docker.registry.email    = ${registry?.email}
-""")
+                    soramitsu                          = ${ext}
+                    soramitsu.projectGroup             = ${ext?.projectGroup}
+                    soramitsu.docker                   = ${docker}
+                    soramitsu.docker.jar               = ${docker?.jar}
+                    soramitsu.docker.tag               = ${docker?.tag}
+                    soramitsu.docker.registry          = ${registry}
+                    soramitsu.docker.registry.url      = ${registry?.url}
+                    soramitsu.docker.registry.username = ${registry?.username}
+                    soramitsu.docker.registry.password = ${registry?.password}
+                    soramitsu.docker.registry.email    = ${registry?.email}
+                """)
             }
         }
 
@@ -82,15 +82,14 @@ class InfoPlugin implements Plugin<Project> {
 
             t.doLast {
                 println("""
-    docker.registry      = ${registry?.url}
-    docker.projectGroup  = ${project.extensions.getByType(SoramitsuExtension)?.projectGroup}
-    docker.projectName   = ${project.name}
-    docker.imageName     = ${parts}
-    docker.tag           = ${tag}
-    docker.fullImageName = ${parts}:${tag}
-""")
+                    docker.registry      = ${registry?.url}
+                    docker.projectGroup  = ${project.extensions.getByType(SoramitsuExtension)?.projectGroup}
+                    docker.projectName   = ${project.name}
+                    docker.imageName     = ${parts}
+                    docker.tag           = ${tag}
+                    docker.fullImageName = ${parts}:${tag}
+                """)
             }
         }
-
     }
 }

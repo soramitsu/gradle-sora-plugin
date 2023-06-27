@@ -32,7 +32,11 @@ class DockerConfig {
 
     @Input
     @Optional
-    String args
+    Map<String, String> buildArgs
+
+    @Input
+    @Optional
+    String runArgs
 
     private Project project
 

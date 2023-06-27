@@ -14,6 +14,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
+import org.gradle.api.tasks.Exec
 
 import java.util.stream.Collectors
 
@@ -44,14 +45,16 @@ class DockerPlugin implements Plugin<Project> {
             setupDockerfileCreateTask(p, dockerConfig)
             setupDockerCopyJarTask(p, jar)
             setupDockerCopyFilesTask(p, dockerConfig)
-            setupDockerBuildTask(p, tag)
+            setupDockerBuildTask(p, tag, dockerConfig.buildArgs)
             setupDockerPushTask(p, registry, tag)
         }
     }
 
-    static String getDefaultTag(Project project,
-                                DockerRegistryConfig registry,
-                                DockerConfig dockerConfig) {
+    static String getDefaultTag(
+            Project project,
+            DockerRegistryConfig registry,
+            DockerConfig dockerConfig
+    ) {
         def parts = []
         parts << registry?.url
         parts << project.extensions.getByType(SoramitsuExtension)?.projectGroup
@@ -101,16 +104,12 @@ class DockerPlugin implements Plugin<Project> {
         project.tasks.register(SoraTask.dockerPush, DockerPushImage).configure { DockerPushImage t ->
             t.group = DOCKER_TASK_GROUP
             t.description = "Push docker image to ${registry.url}"
-
-            t.dependsOn([
-                    SoraTask.dockerBuild,
-            ])
-
+            t.dependsOn([SoraTask.dockerBuild])
             t.images.set([tag])
         }
     }
 
-    static void setupDockerBuildTask(Project project, String tag) {
+    static void setupDockerBuildTask(Project project, String tag, Map<String, String> buildArgs) {
         project.tasks.register(SoraTask.dockerBuild, DockerBuildImage).configure { DockerBuildImage t ->
             t.group = DOCKER_TASK_GROUP
             t.description = "Build docker image with tag ${tag}"
@@ -122,6 +121,10 @@ class DockerPlugin implements Plugin<Project> {
                     SoraTask.dockerCopyFiles,
                     SoraTask.dockerfileCreate
             ])
+
+            if (buildArgs != null && !buildArgs.isEmpty()) {
+                t.buildArgs.set(buildArgs)
+            }
 
             t.images.set([tag])
 
@@ -216,7 +219,7 @@ class DockerPlugin implements Plugin<Project> {
             t.instruction "USER appuser"
 
             // if null, then use empty string
-            def args = dockerConfig.args ?: ""
+            def args = dockerConfig.runArgs ?: ""
 
             t.defaultCommand "sh", "-c", "java \${JAVA_OPTIONS} -Djava.security.egd=file:/dev/./urandom -jar /${jar.name} $args"
         }

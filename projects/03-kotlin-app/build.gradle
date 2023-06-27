@@ -45,7 +45,7 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-// since we applied 'appliction', then we expect to have docker tasks enabled
+// since we applied 'application', then we expect to have docker tasks enabled
 // define path to packaged jar:
 soramitsu {
     docker {

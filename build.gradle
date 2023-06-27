@@ -1,19 +1,19 @@
 plugins {
 //    id 'nebula.lint' version '9.3.2'
-    id "com.palantir.idea-test-fix" version "0.1.0"
+    id 'com.palantir.idea-test-fix' version "0.1.0"
     id 'groovy'
     id 'maven-publish'
     id 'idea'
     id 'java'
-    id "com.gradle.plugin-publish" version "0.15.0"
-    id "java-gradle-plugin"
+    id 'com.gradle.plugin-publish' version "0.15.0"
+    id 'java-gradle-plugin'
     id 'com.palantir.git-version' version '0.12.0-rc2'
     id 'com.adarshr.test-logger' version '3.0.0'
 }
 
 group 'jp.co.soramitsu'
 def pluginId = "${group}.sora-plugin"
-version System.getenv('TAG_NAME') ?: "0.4.0"
+version System.getenv('TAG_NAME') ?: "0.5.3"
 
 repositories {
     mavenCentral()
