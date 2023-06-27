@@ -109,7 +109,7 @@ class DockerPlugin implements Plugin<Project> {
         }
     }
 
-    static void setupDockerBuildTask(Project project, String tag, Map<String,String> buildArgs) {
+    static void setupDockerBuildTask(Project project, String tag, Map<String, String> buildArgs) {
         project.tasks.register(SoraTask.dockerBuild, DockerBuildImage).configure { DockerBuildImage t ->
             t.group = DOCKER_TASK_GROUP
             t.description = "Build docker image with tag ${tag}"
@@ -122,7 +122,9 @@ class DockerPlugin implements Plugin<Project> {
                     SoraTask.dockerfileCreate
             ])
 
-            t.buildArgs.set(buildArgs)
+            if (buildArgs != null && !buildArgs.isEmpty()) {
+                t.buildArgs.set(buildArgs)
+            }
 
             t.images.set([tag])
 
