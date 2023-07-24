@@ -215,8 +215,11 @@ class DockerPlugin implements Plugin<Project> {
             t.entryPoint "/tini", "--"
 
             // add user
-            def command = "cat /etc/os-release"
+            //def command = "cat /etc/os-release"
+            //def content = ["sh", "-c", command].execute().text
+            def command = "docker run -it --rm openjdk:17-jdk-slim cat /etc/os-release"
             def content = ["sh", "-c", command].execute().text
+            println content
             if ( content.contains("alpine") ) {
                 t.runCommand "addgroup -S appuser && adduser -S -G appuser appuser"
             }  else {
