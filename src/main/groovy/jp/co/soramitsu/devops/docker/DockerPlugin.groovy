@@ -217,7 +217,7 @@ class DockerPlugin implements Plugin<Project> {
             // add user
             //def command = "cat /etc/os-release"
             //def content = ["sh", "-c", command].execute().text
-            def command = "docker run -it --rm openjdk:17-jdk-slim cat /etc/os-release"
+            def command = "docker run -it --rm ${dockerConfig.baseImage} cat /etc/os-release"
             def content = ["sh", "-c", command].execute().text
             println content
             if ( content.contains("alpine") ) {
