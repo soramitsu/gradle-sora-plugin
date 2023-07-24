@@ -217,10 +217,10 @@ class DockerPlugin implements Plugin<Project> {
             // add user
             def command = "cat /etc/os-release"
             def content = ["sh", "-c", command].execute().text
-            if ( content.contains("ubuntu") ) {
-                t.runCommand "groupadd -r appuser && useradd -r -g appuser appuser"
-            }  else {
+            if ( content.contains("alpine") ) {
                 t.runCommand "addgroup -S appuser && adduser -S -G appuser appuser"
+            }  else {
+                t.runCommand "groupadd -r appuser && useradd -r -g appuser appuser"
             }            
             t.instruction "USER appuser"
 
