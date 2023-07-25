@@ -219,9 +219,9 @@ class DockerPlugin implements Plugin<Project> {
             def content = ["sh", "-c", command].execute().text
 
             if (content.contains("alpine")) {
-                groupCommand = "addgroup -S appuser && adduser -S -G appuser appuser"
+                def groupCommand = "addgroup -S appuser && adduser -S -G appuser appuser"
             }  else {
-                groupCommand = "groupadd -r appuser && useradd -r -g appuser appuser"
+                def groupCommand = "groupadd -r appuser && useradd -r -g appuser appuser"
             }
             t.runCommand groupCommand             
             t.instruction "USER appuser"
