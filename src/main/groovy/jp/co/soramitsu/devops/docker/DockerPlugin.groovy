@@ -215,7 +215,16 @@ class DockerPlugin implements Plugin<Project> {
             t.entryPoint "/tini", "--"
 
             // add user
-            t.runCommand "groupadd -r appuser && useradd -r -g appuser appuser"
+            def command = "docker run -t --rm ${dockerConfig.baseImage} cat /etc/os-release"
+            def content = ["sh", "-c", command].execute().text
+
+            def groupCommand = ""
+            if (content.contains("alpine")) {
+                groupCommand = "addgroup -S appuser && adduser -S -G appuser appuser"
+            }  else {
+                groupCommand = "groupadd -r appuser && useradd -r -g appuser appuser"
+            }
+            t.runCommand groupCommand             
             t.instruction "USER appuser"
 
             // if null, then use empty string
