@@ -210,9 +210,9 @@ class DockerPlugin implements Plugin<Project> {
             t.copyFile jar.name, "/${jar.name}"
 
             // setup tiny https://github.com/krallin/tini
-            t.addFile "https://github.com/krallin/tini/releases/download/v0.19.0/tini", "/tini"
-            t.runCommand "chmod +x /tini"
-            t.entryPoint "/tini", "--"
+            t.addFile "https://github.com/krallin/tini/releases/download/v0.19.0/tini", "/sbin/tini"
+            t.runCommand "chmod +x /sbin/tini"
+            t.entryPoint "tini", "--"
 
             // add user
             def command = "docker run -t --rm ${dockerConfig.baseImage} cat /etc/os-release"
@@ -220,11 +220,12 @@ class DockerPlugin implements Plugin<Project> {
 
             def groupCommand = ""
             if (content.contains("alpine")) {
+                t.runCommand = "apk add --no-cache tini"
                 groupCommand = "addgroup -S appuser && adduser -S -G appuser appuser"
             }  else {
                 groupCommand = "groupadd -r appuser && useradd -r -g appuser appuser"
             }
-            t.runCommand groupCommand             
+            t.runCommand groupCommand
             t.instruction "USER appuser"
 
             // if null, then use empty string
