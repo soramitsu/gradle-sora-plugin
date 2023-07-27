@@ -220,7 +220,7 @@ class DockerPlugin implements Plugin<Project> {
 
             def groupCommand = ""
             if (content.contains("alpine")) {
-                t.runCommand = "apk add --no-cache tini"
+                t.runCommand "apk add --no-cache tini"
                 groupCommand = "addgroup -S appuser && adduser -S -G appuser appuser"
             }  else {
                 groupCommand = "groupadd -r appuser && useradd -r -g appuser appuser"
