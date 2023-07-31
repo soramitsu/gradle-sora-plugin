@@ -217,12 +217,12 @@ class DockerPlugin implements Plugin<Project> {
             if (content.contains("alpine")) {
                 // setup tiny https://github.com/krallin/tini
                 t.runCommand "apk add --no-cache tini"
-                t.runCommand = "addgroup -S appuser && adduser -S -G appuser appuser"
+                t.runCommand "addgroup -S appuser && adduser -S -G appuser appuser"
             }  else {
                 // setup tiny https://github.com/krallin/tini
                 t.addFile "https://github.com/krallin/tini/releases/download/v0.19.0/tini", "/sbin/tini"
                 t.runCommand "chmod +x /sbin/tini"
-                t.runCommand = "groupadd -r appuser && useradd -r -g appuser appuser"
+                t.runCommand "groupadd -r appuser && useradd -r -g appuser appuser"
             }
             t.entryPoint "tini", "--"
             t.instruction "USER appuser"
