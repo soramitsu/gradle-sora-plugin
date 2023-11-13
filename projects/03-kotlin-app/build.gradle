@@ -10,11 +10,12 @@ buildscript {
         mavenCentral()
         gradlePluginPortal()
         dependencies {
-            classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21'
+            classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.20'
             classpath 'jp.co.soramitsu:sora-plugin:+'
         }
     }
 }
+
 // this is how we apply plugin for local dev
 apply plugin: 'jp.co.soramitsu.sora-plugin'
 apply plugin: 'application'
