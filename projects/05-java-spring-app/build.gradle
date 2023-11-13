@@ -1,19 +1,16 @@
-buildscript {
-	repositories {
-		mavenLocal()
-		mavenCentral()
-		gradlePluginPortal()
-		dependencies {
-			classpath 'jp.co.soramitsu:sora-plugin:+'
-			classpath("org.springframework.boot:spring-boot-gradle-plugin:2.5.4")
-		}
-	}
+plugins {
+    id "org.springframework.boot" version "3.1.5"
+    id "jp.co.soramitsu.sora-plugin" version "+"
+    id "application"
+    id "java"
+
 }
-apply plugin: 'jp.co.soramitsu.sora-plugin'
-apply plugin: 'application'
-apply plugin: 'org.springframework.boot'
+
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'java'
+
+java {
+    sourceCompatibility = '21'
+}
 
 println("Hello from 05-java-spring-app")
 
@@ -22,24 +19,24 @@ mainClassName = 'example.javaspringapp.Application'
 project.version = 'test'
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 soramitsu {
-	docker {
-		jar = new File("build/libs/${project.name}-${project.version}.jar")
-	}
+    docker {
+        jar = new File("build/libs/${project.name}-${project.version}.jar")
+    }
 }
 
 // define main class in the manifest
 jar {
-	manifest {
-		attributes 'Implementation-Version': archiveVersion,
-				'Main-Class': 'example.javaspringapp.Application'
-	}
+    manifest {
+        attributes 'Implementation-Version': archiveVersion,
+                'Main-Class': 'example.javaspringapp.Application'
+    }
 }

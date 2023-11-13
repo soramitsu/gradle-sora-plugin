@@ -31,9 +31,9 @@ soramitsu {
         baseImage = 'openjdk:11-jre-slim'
         jar = new File("build/libs/${project.name}-${project.version}.jar")
         files = [
-                "build.gradle":"/build.gradle",
+                "build.gradle"   : "/build.gradle",
                 "settings.gradle": "/1/settings.gradle",
-                "gradlew": "/1/2/gradlew"
+                "gradlew"        : "/1/2/gradlew"
         ]
     }
 }
