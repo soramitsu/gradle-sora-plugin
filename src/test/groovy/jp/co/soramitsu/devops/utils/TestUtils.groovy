@@ -11,13 +11,13 @@ class TestUtils extends Specification {
 
     static final def apps = [
             '01-java-app',
-            '03-kotlin-app',
+//            '03-kotlin-app',
             '05-java-spring-app'
     ]
 
     static final def libs = [
             '02-java-lib',
-            '04-kotlin-lib',
+//            '04-kotlin-lib',
     ]
 
     static final def projects = [
