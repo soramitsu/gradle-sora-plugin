@@ -6,11 +6,11 @@ plugins {
 
 }
 
-apply plugin: 'jp.co.soramitsu.sora-plugin'
-apply plugin: 'application'
-apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'java'
+
+java {
+    sourceCompatibility = '21'
+}
 
 println("Hello from 05-java-spring-app")
 
