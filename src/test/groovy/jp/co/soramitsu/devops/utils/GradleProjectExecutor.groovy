@@ -12,7 +12,7 @@ class GradleProjectExecutor {
 
     Logger logger = LoggerFactory.getLogger(GradleProjectExecutor.class)
 
-    private static final String defaultGradleVersion = '7.4'
+    private static final String defaultGradleVersion = '8.5'
 
     File projectDir
     protected File buildFile

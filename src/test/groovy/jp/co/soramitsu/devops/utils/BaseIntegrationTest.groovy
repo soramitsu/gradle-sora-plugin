@@ -8,7 +8,7 @@ import spock.lang.TempDir
 import java.nio.file.Path
 
 class BaseIntegrationTest extends Specification {
-    private static final String defaultGradleVersion = '7.4'
+    private static final String defaultGradleVersion = '8.6'
 
     @TempDir
     Path testProjectDir
