@@ -218,7 +218,7 @@ class DockerPlugin implements Plugin<Project> {
                 // setup tiny https://github.com/krallin/tini
                 t.runCommand "apk add --no-cache tini"
                 t.runCommand "addgroup -S appuser && adduser -S -G appuser appuser"
-            }  else {
+            } else {
                 // setup tiny https://github.com/krallin/tini
                 t.addFile "https://github.com/krallin/tini/releases/download/v0.19.0/tini", "/sbin/tini"
                 t.runCommand "chmod +x /sbin/tini"
@@ -277,6 +277,8 @@ class DockerPlugin implements Plugin<Project> {
                 flags << "-XX:MinRAMPercentage=50"
                 flags << "-XX:InitialRAMPercentage=50"
                 break
+            case 21:
+                break;
             default:
                 throw new IllegalStateException(format("undefined/unsupported java version: ${version}"))
         }
@@ -293,6 +295,8 @@ class DockerPlugin implements Plugin<Project> {
             return 'openjdk:13'
         } else if (javaVersion == 17) {
             return 'openjdk:17-jdk-slim'
+        } else if (javaVersion == 21) {
+            return 'amazoncorretto:21.0.2-al2023-headless'
         } else {
             // default fallback version
             return 'openjdk:8-jre-alpine'
