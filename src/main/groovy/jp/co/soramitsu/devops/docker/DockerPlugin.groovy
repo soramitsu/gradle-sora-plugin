@@ -185,7 +185,8 @@ class DockerPlugin implements Plugin<Project> {
 
             // if baseImage is defined, then use it.
             // otherwise, derive docker image from java version and use it
-            t.from dockerConfig.baseImage ?: getBaseDockerImage(version)
+            def baseImage = dockerConfig.baseImage ?: getBaseDockerImage(version)
+            t.from baseImage
             t.label([
                     "version"     : "${project.version}",
                     "built-date"  : "${new Date()}",
@@ -210,10 +211,9 @@ class DockerPlugin implements Plugin<Project> {
             t.copyFile jar.name, "/${jar.name}"
 
             // add user
-            def command = "docker run -t --rm ${dockerConfig.baseImage} cat /etc/os-release"
+            def command = "docker run -t --rm ${baseImage} cat /etc/os-release"
             def content = ["sh", "-c", command].execute().text
 
-            def groupCommand = ""
             if (content.contains("alpine")) {
                 // setup tiny https://github.com/krallin/tini
                 t.runCommand "apk add --no-cache tini"
