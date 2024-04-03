@@ -296,7 +296,7 @@ class DockerPlugin implements Plugin<Project> {
         } else if (javaVersion == 17) {
             return 'openjdk:17-jdk-slim'
         } else if (javaVersion == 21) {
-            return 'amazoncorretto:21-alpine3.18-jdk'
+            return 'openjdk:21-jdk-slim'
         } else {
             // default fallback version
             return 'openjdk:8-jre-alpine'
