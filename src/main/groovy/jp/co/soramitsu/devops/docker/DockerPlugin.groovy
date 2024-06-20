@@ -294,9 +294,9 @@ class DockerPlugin implements Plugin<Project> {
         } else if (javaVersion == 13) {
             return 'openjdk:13'
         } else if (javaVersion == 17) {
-            return 'openjdk:17-jdk-slim'
+            return 'eclipse-temurin:17-jre-alpine'
         } else if (javaVersion == 21) {
-            return 'eclipse-temurin:21-jre'
+            return 'eclipse-temurin:21-jre-alpine'
         } else {
             // default fallback version
             return 'openjdk:8-jre-alpine'
