@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checks-out the repo under $GITHUB_WORKSPACE, so that workflow accesses it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@e7e449dced768f0201582e76e92398df44e85f4f # v4.1.1
       - name: Store gradle key & secret into gradle.properties
         env:
           GRADLE_KEY: ${{ secrets.GRADLE_KEY }}

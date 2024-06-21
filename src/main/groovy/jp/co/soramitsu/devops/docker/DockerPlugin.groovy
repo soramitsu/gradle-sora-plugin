@@ -185,7 +185,8 @@ class DockerPlugin implements Plugin<Project> {
 
             // if baseImage is defined, then use it.
             // otherwise, derive docker image from java version and use it
-            t.from dockerConfig.baseImage ?: getBaseDockerImage(version)
+            def baseImage = dockerConfig.baseImage ?: getBaseDockerImage(version)
+            t.from baseImage
             t.label([
                     "version"     : "${project.version}",
                     "built-date"  : "${new Date()}",
@@ -210,15 +211,14 @@ class DockerPlugin implements Plugin<Project> {
             t.copyFile jar.name, "/${jar.name}"
 
             // add user
-            def command = "docker run -t --rm ${dockerConfig.baseImage} cat /etc/os-release"
+            def command = "docker run -t --rm ${baseImage} cat /etc/os-release"
             def content = ["sh", "-c", command].execute().text
 
-            def groupCommand = ""
             if (content.contains("alpine")) {
                 // setup tiny https://github.com/krallin/tini
                 t.runCommand "apk add --no-cache tini"
                 t.runCommand "addgroup -S appuser && adduser -S -G appuser appuser"
-            }  else {
+            } else {
                 // setup tiny https://github.com/krallin/tini
                 t.addFile "https://github.com/krallin/tini/releases/download/v0.19.0/tini", "/sbin/tini"
                 t.runCommand "chmod +x /sbin/tini"
@@ -277,6 +277,8 @@ class DockerPlugin implements Plugin<Project> {
                 flags << "-XX:MinRAMPercentage=50"
                 flags << "-XX:InitialRAMPercentage=50"
                 break
+            case 21:
+                break;
             default:
                 throw new IllegalStateException(format("undefined/unsupported java version: ${version}"))
         }
@@ -292,7 +294,9 @@ class DockerPlugin implements Plugin<Project> {
         } else if (javaVersion == 13) {
             return 'openjdk:13'
         } else if (javaVersion == 17) {
-            return 'openjdk:17-jdk-slim'
+            return 'eclipse-temurin:17-jre-alpine'
+        } else if (javaVersion == 21) {
+            return 'eclipse-temurin:21-jre-alpine'
         } else {
             // default fallback version
             return 'openjdk:8-jre-alpine'
